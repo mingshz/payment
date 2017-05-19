@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+</head>
+<body>
+
+<form action="pay.html" method="get" th:action="@{/goOrder}">
+
+    <label>
+        金额
+        <input name="amount" type="number" value="1"/>
+    </label>
+
+    <label>
+        产品
+        <input name="name" type="text" value="小杨"/>
+    </label>
+
+    <label>
+        支付类型
+        <select name="type">
+            <option value="me.jiangcai.demo.pay.bean.DemoPaymentForm">Demo</option>
+            <option value="me.jiangcai.payment.chanpay.service.ChanpayPaymentForm">畅捷支付</option>
+        </select>
+    </label>
+
+    <input type="submit" value="下单"/>
+</form>
+</body>
+</html>

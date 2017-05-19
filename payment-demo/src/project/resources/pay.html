@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>支付中……</title>
+</head>
+<!--/*@thymesVar id="payOrder" type="me.jiangcai.payment.entity.PayOrder"*/-->
+<body data-pay-url="pay.html" th:data-pay-url="@{'/pay/'+${payOrder.platformId}}"
+      data-check-url="pay.html" th:data-check-url="@{''+${checkUri}}"
+      data-success-url="paySuccess.html" th:data-success-url="@{''+${successUri}}"
+>
+
+<p th:remove="all">
+    order 客户项目的订单PayableOrder
+    payOrder 支付订单PayOrder
+    checkUri 校验是否成功支付的URI，它的响应正文将只有true和false(JSON)
+    successUri 成功之后将跳转的uri 通常是一个html响应
+</p>
+
+<!--/*@thymesVar id="order" type="me.jiangcai.payment.PayableOrder"*/-->
+<h2>订单情况</h2>
+<p th:text="${order}">
+    订单情况 foo..bar..
+</p>
+
+<h2>支付情况</h2>
+<p th:text="${payOrder}">
+    支付情况 bar..foo..
+</p>
+<button id="pay">同意支付</button>
+<button id="noPay">拒绝支付</button>
+
+<script src="//cdn.kuanyes.com/jquery-3.1.1.min.js"></script>
+<script>
+    $(function () {
+        // 一直检查 check
+
+        var completeCheck = function (data) {
+            if (data && data == true) {
+                window.location.href = $('body').attr('data-success-url');
+            } else {
+                //继续刷
+                //等待一会儿
+                setTimeout('$._loginCheck()', 2500);
+            }
+        };
+
+        $._loginCheck = function () {
+            $.ajax($('body').attr('data-check-url'), {
+                method: 'get',
+                dataType: 'json',
+                success: completeCheck,
+                error: function (msg) {
+                    console.log(msg.responseText);
+                    setTimeout('$._loginCheck()', 5000);
+                }
+            });
+        };
+
+        setTimeout('$._loginCheck()', 2000);
+
+        function pay(success) {
+            $.ajax($('body').attr('data-pay-url'), {
+                method: 'put',
+                contentType: 'application/json',
+                data: JSON.stringify(success)
+            });
+        }
+
+        $('#pay').click(function () {
+            pay(true);
+        });
+        $('#noPay').click(function () {
+            pay(false);
+        });
+    });
+</script>
+</body>
+</html>

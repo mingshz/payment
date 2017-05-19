@@ -1,0 +1,93 @@
+package me.jiangcai.payment.service.impl;
+
+import me.jiangcai.payment.entity.PayOrder;
+import me.jiangcai.payment.event.OrderPayCancellation;
+import me.jiangcai.payment.event.OrderPaySuccess;
+import me.jiangcai.payment.event.PaymentEvent;
+import me.jiangcai.payment.service.PayableSystemService;
+import me.jiangcai.payment.service.PaymentGatewayService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
+
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.time.LocalDateTime;
+
+/**
+ * @author CJ
+ */
+@Service
+public class PaymentGatewayServiceImpl implements PaymentGatewayService {
+
+    @SuppressWarnings("SpringJavaAutowiringInspection")
+    @Autowired
+    private EntityManager entityManager;
+    @Autowired
+    private ApplicationContext applicationContext;
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
+    @SuppressWarnings("SpringJavaAutowiringInspection")
+    @Autowired
+    private PayableSystemService payableSystemService;
+
+    @Override
+    public <T extends PayOrder> T getOrder(Class<T> type, String platformId) {
+        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(type);
+        Root<T> root = criteriaQuery.from(type);
+        criteriaQuery = criteriaQuery.where(criteriaBuilder.equal(root.get("platformId"), platformId));
+        TypedQuery<T> query = entityManager.createQuery(criteriaQuery);
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException ignored) {
+            return null;
+        }
+    }
+
+    @Override
+    public void makeEvent(PaymentEvent event) {
+        synchronized (event.makeKey()) {
+            applicationEventPublisher.publishEvent(event);
+        }
+    }
+
+    @Override
+    public void paySuccess(PayOrder order) {
+        order.setFinishTime(LocalDateTime.now());
+        order.setSuccess(true);
+        entityManager.merge(order);
+        applicationContext.getBean(PaymentGatewayService.class)
+                .makeEvent(new OrderPaySuccess(payableSystemService.getOrder(order.getPayableOrderId()), order));
+    }
+
+    @Override
+    public void payCancel(PayOrder order) {
+        order.setFinishTime(LocalDateTime.now());
+        entityManager.merge(order);
+        applicationContext.getBean(PaymentGatewayService.class)
+                .makeEvent(new OrderPayCancellation(payableSystemService.getOrder(order.getPayableOrderId()), order));
+    }
+
+    @Override
+    public PayOrder getSuccessOrder(String payableOrderId) {
+        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<PayOrder> criteriaQuery = criteriaBuilder.createQuery(PayOrder.class);
+        Root<PayOrder> root = criteriaQuery.from(PayOrder.class);
+        criteriaQuery = criteriaQuery
+                .where(criteriaBuilder
+                        .and(criteriaBuilder.equal(root.get("payableOrderId"), payableOrderId)
+                                , criteriaBuilder.isTrue(root.get("success"))));
+        TypedQuery<PayOrder> query = entityManager.createQuery(criteriaQuery);
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException ignored) {
+            return null;
+        }
+    }
+}
