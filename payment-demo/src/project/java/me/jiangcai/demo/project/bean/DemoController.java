@@ -40,7 +40,7 @@ public class DemoController {
         order.setOrderProductName(name);
         order = demoTradeOrderRepository.saveAndFlush(order);
 
-        return paymentService.startPay(order, (PaymentForm) applicationContext.getBean(Class.forName(type)), null);
+        return paymentService.startPay(null, order, (PaymentForm) applicationContext.getBean(Class.forName(type)), null);
     }
 
 }

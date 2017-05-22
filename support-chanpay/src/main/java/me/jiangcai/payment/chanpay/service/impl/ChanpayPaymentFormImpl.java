@@ -11,11 +11,14 @@ import me.jiangcai.payment.chanpay.service.ChanpayPaymentForm;
 import me.jiangcai.payment.entity.PayOrder;
 import me.jiangcai.payment.exception.SystemMaintainException;
 import me.jiangcai.payment.service.PaymentGatewayService;
+import me.jiangcai.payment.service.PaymentService;
+import me.jiangcai.payment.util.RequestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.SignatureException;
 import java.time.LocalDateTime;
@@ -54,16 +57,30 @@ public class ChanpayPaymentFormImpl implements ChanpayPaymentForm {
     }
 
     @Override
-    public PayOrder newPayOrder(PayableOrder order, Map<String, Object> additionalParameters) throws SystemMaintainException {
+    public PayOrder newPayOrder(HttpServletRequest httpRequest, PayableOrder order, Map<String, Object> additionalParameters) throws SystemMaintainException {
         CreateInstantTrade request = new CreateInstantTrade();
         request.setAmount(order.getOrderDueAmount());
 //        request.setPayerName(card.getOwner());
         request.setProductName(order.getOrderProductName());
 
+
+        // /_payment/success/
         // 默认微信支付
-        if (additionalParameters != null && additionalParameters.get("desktop") != null && Boolean.valueOf(additionalParameters.get("desktop").toString()))
-            ;
-        else
+        if (additionalParameters != null && additionalParameters.get("desktop") != null && Boolean.valueOf(additionalParameters.get("desktop").toString())) {
+            // 计算url
+            StringBuilder sb;
+            if (additionalParameters.containsKey(PaymentService.ContextURLNAME)) {
+                sb = new StringBuilder();
+                sb.append(additionalParameters.get(PaymentService.ContextURLNAME));
+            } else {
+                sb = RequestUtil.buildContextUrl(httpRequest);
+            }
+            sb.append("/_payment/success/")
+                    .append(order.getPayableOrderId());
+            request.setReturnUrl(sb.toString());
+            request.setReturnPayUrl(true);
+
+        } else
             request.scanPay();
 
         try {

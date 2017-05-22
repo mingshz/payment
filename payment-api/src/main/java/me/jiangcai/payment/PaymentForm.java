@@ -3,6 +3,7 @@ package me.jiangcai.payment;
 import me.jiangcai.payment.entity.PayOrder;
 import me.jiangcai.payment.exception.SystemMaintainException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -22,10 +23,11 @@ public interface PaymentForm {
      * <li>成功取消 {@link me.jiangcai.payment.service.PaymentGatewayService#payCancel(PayOrder)}</li>
      * </ul>
      *
+     * @param request              相关请求
      * @param order                需要支付的交易订单
-     * @param additionalParameters 可选的附加参数；具体规格参考实现说明
+     * @param additionalParameters 可选的附加参数；具体规格参考实现说明{@link me.jiangcai.payment.service.PaymentService#startPay(HttpServletRequest, PayableOrder, PaymentForm, Map)}
      * @return 新的支付订单
      * @throws SystemMaintainException 支付系统维护中
      */
-    PayOrder newPayOrder(PayableOrder order, Map<String, Object> additionalParameters) throws SystemMaintainException;
+    PayOrder newPayOrder(HttpServletRequest request, PayableOrder order, Map<String, Object> additionalParameters) throws SystemMaintainException;
 }

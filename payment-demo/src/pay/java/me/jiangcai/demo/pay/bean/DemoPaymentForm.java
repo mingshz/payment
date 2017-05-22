@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,7 +25,7 @@ public class DemoPaymentForm implements PaymentForm {
     private PaymentGatewayService paymentGatewayService;
 
     @Override
-    public PayOrder newPayOrder(PayableOrder order, Map<String, Object> additionalParameters) throws SystemMaintainException {
+    public PayOrder newPayOrder(HttpServletRequest request, PayableOrder order, Map<String, Object> additionalParameters) throws SystemMaintainException {
         PayOrder payOrder = new DemoPayOrder();
         payOrder.setPlatformId(UUID.randomUUID().toString());
         return payOrder;

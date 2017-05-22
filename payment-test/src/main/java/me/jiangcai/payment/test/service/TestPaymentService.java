@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.PreDestroy;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -31,9 +32,9 @@ public class TestPaymentService extends PaymentServiceImpl {
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
     @Override
-    public ModelAndView startPay(PayableOrder order, PaymentForm form, Map<String, Object> additionalParameters)
+    public ModelAndView startPay(HttpServletRequest request, PayableOrder order, PaymentForm form, Map<String, Object> additionalParameters)
             throws SystemMaintainException {
-        ModelAndView modelAndView = super.startPay(order, form, additionalParameters);
+        ModelAndView modelAndView = super.startPay(request, order, form, additionalParameters);
         PayOrder payOrder = (PayOrder) modelAndView.getModel().get("payOrder");
         PayableOrder payableOrder = (PayableOrder) modelAndView.getModel().get("order");
 

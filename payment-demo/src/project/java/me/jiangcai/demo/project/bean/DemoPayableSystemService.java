@@ -10,6 +10,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -28,12 +29,12 @@ public class DemoPayableSystemService implements PayableSystemService {
     }
 
     @Override
-    public ModelAndView paySuccess(PayableOrder payableOrder, PayOrder payOrder) {
+    public ModelAndView paySuccess(HttpServletRequest request, PayableOrder payableOrder, PayOrder payOrder) {
         return new ModelAndView("paySuccess.html");
     }
 
     @Override
-    public ModelAndView pay(PayableOrder order, PayOrder payOrder, Map<String, Object> additionalParameters) {
+    public ModelAndView pay(HttpServletRequest request, PayableOrder order, PayOrder payOrder, Map<String, Object> additionalParameters) {
         return new ModelAndView("pay.html");
     }
 

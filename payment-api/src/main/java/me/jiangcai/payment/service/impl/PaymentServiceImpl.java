@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,9 +29,9 @@ public class PaymentServiceImpl implements PaymentService {
     private EntityManager entityManager;
 
     @Override
-    public ModelAndView startPay(PayableOrder order, PaymentForm form, Map<String, Object> additionalParameters) throws SystemMaintainException {
+    public ModelAndView startPay(HttpServletRequest request, PayableOrder order, PaymentForm form, Map<String, Object> additionalParameters) throws SystemMaintainException {
         // 我们并不需要告诉order 我们的支付细节！
-        PayOrder payOrder = form.newPayOrder(order, additionalParameters);
+        PayOrder payOrder = form.newPayOrder(request, order, additionalParameters);
         payOrder.setStartTime(LocalDateTime.now());
         payOrder.setPayableOrderId(order.getPayableOrderId().toString());
         entityManager.persist(payOrder);
@@ -44,7 +45,7 @@ public class PaymentServiceImpl implements PaymentService {
         additionalParameters.put("order", order);
         additionalParameters.put("payOrder", payOrder);
 
-        ModelAndView modelAndView = payableSystemService.pay(order, payOrder, additionalParameters);
+        ModelAndView modelAndView = payableSystemService.pay(request, order, payOrder, additionalParameters);
         // 还将对它进行处理 给它几个控制地址
         modelAndView.addObject("order", order);
         modelAndView.addObject("payOrder", payOrder);
