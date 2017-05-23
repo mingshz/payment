@@ -8,6 +8,7 @@ import me.jiangcai.payment.util.RequestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -33,6 +34,8 @@ public class PaymentSupportController {
     private PayableSystemService payableSystemService;
     @Autowired
     private PaymentGatewayService paymentGatewayService;
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @RequestMapping(method = RequestMethod.GET, value = "/completed/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> completed(@PathVariable("id") String id) {
@@ -53,8 +56,14 @@ public class PaymentSupportController {
             return modelAndView;
         } catch (NoResultException ignored) {
             log.trace("可能是异步通知晚于同步回调导致的", ignored);
+            ModelAndView modelAndView = payableSystemService.redirectSelfView(request);
+            if (modelAndView != null)
+                return modelAndView;
             //等待服务端通知
-            return new ModelAndView(new CheckSuccessLaterView(), Collections.singletonMap("url"
+            final CheckSuccessLaterView view = new CheckSuccessLaterView();
+            view.setServletContext(request.getServletContext());
+            view.setApplicationContext(applicationContext);
+            return new ModelAndView(view, Collections.singletonMap("url"
                     , RequestUtil.buildContextUrl(request).append("/_payment/success/").append(id)));
         }
     }
