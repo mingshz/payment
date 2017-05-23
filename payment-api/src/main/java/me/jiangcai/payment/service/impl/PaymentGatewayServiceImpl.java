@@ -84,10 +84,6 @@ public class PaymentGatewayServiceImpl implements PaymentGatewayService {
                         .and(criteriaBuilder.equal(root.get("payableOrderId"), payableOrderId)
                                 , criteriaBuilder.isTrue(root.get("success"))));
         TypedQuery<PayOrder> query = entityManager.createQuery(criteriaQuery);
-        try {
-            return query.getSingleResult();
-        } catch (NoResultException ignored) {
-            return null;
-        }
+        return query.getSingleResult();
     }
 }
