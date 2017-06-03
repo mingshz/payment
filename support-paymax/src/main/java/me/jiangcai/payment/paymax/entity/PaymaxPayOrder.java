@@ -24,6 +24,7 @@ public class PaymaxPayOrder extends PayOrder {
      * 我们自己产生的编码UUID
      * @see com.paymax.model.Charge#orderNo
      */
+    @Column(length = 32)
     private String orderNumber;
 
     /**
