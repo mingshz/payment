@@ -24,6 +24,8 @@
                 <value>me.jiangcai.demo.pay.entity</value>
                 <!--畅捷支付渠道-->
                 <value>me.jiangcai.payment.chanpay.entity</value>
+                <!--拉卡拉支付渠道-->
+                <value>me.jiangcai.payment.paymax.entity</value>
             </array>
         </property>
         <property name="persistenceProvider">

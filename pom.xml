@@ -13,6 +13,7 @@
         <module>payment-demo</module>
         <module>support-chanpay</module>
         <module>payment-test</module>
+        <module>support-paymax</module>
     </modules>
 
     <properties>

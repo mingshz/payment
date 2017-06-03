@@ -31,4 +31,9 @@ public class DemoTradeOrder implements PayableOrder {
     public Serializable getPayableOrderId() {
         return id;
     }
+
+    @Override
+    public String getOrderBody() {
+        return orderProductName+"的详情";
+    }
 }
