@@ -96,4 +96,9 @@ public class ChanpayPaymentFormImpl implements ChanpayPaymentForm {
         }
 
     }
+
+    @Override
+    public void orderMaintain() {
+        throw new IllegalStateException("暂不支持");
+    }
 }

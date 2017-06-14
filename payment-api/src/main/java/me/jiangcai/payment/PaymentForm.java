@@ -2,6 +2,7 @@ package me.jiangcai.payment;
 
 import me.jiangcai.payment.entity.PayOrder;
 import me.jiangcai.payment.exception.SystemMaintainException;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -29,5 +30,13 @@ public interface PaymentForm {
      * @return 新的支付订单
      * @throws SystemMaintainException 支付系统维护中
      */
-    PayOrder newPayOrder(HttpServletRequest request, PayableOrder order, Map<String, Object> additionalParameters) throws SystemMaintainException;
+    PayOrder newPayOrder(HttpServletRequest request, PayableOrder order, Map<String, Object> additionalParameters)
+            throws SystemMaintainException;
+
+    /**
+     * 订单维护
+     * 处理一些过期的支付订单，以及发送一些通道已支付，但状态未更新的事件
+     */
+    @Transactional
+    void orderMaintain();
 }

@@ -18,6 +18,10 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -76,6 +80,25 @@ public class PaymaxPaymentFormImpl implements PaymaxPaymentForm {
         return payOrder;
     }
 
+    @Autowired
+    private EntityManager entityManager;
+
+    @Override
+    public void orderMaintain() {
+        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<PaymaxPayOrder> criteriaQuery = criteriaBuilder.createQuery(PaymaxPayOrder.class);
+        Root<PaymaxPayOrder> root = criteriaQuery.from(PaymaxPayOrder.class);
+        criteriaQuery = criteriaQuery.where(
+                criteriaBuilder.and(
+                        criteriaBuilder.equal(root.get("orderStatus"), "SUCCEED")
+                        , PayOrder.Success(root, criteriaBuilder)
+                )
+        );
+        entityManager.createQuery(criteriaQuery)
+                .getResultList()
+                .forEach(order -> paymentGatewayService.paySuccess(order));
+    }
+
     private static final Log log = LogFactory.getLog(PaymaxPaymentFormImpl.class);
     @Autowired
     private PaymentGatewayService paymentGatewayService;
@@ -91,7 +114,7 @@ public class PaymaxPaymentFormImpl implements PaymaxPaymentForm {
         order.setEventTime(LocalDateTime.now());
         order.setOrderStatus(event.getData().getStatus());
 
-        if (order.getFinishTime() == null) {
+        if (!order.isCancel()) {
             if ("SUCCEED".equals(order.getOrderStatus())) {
                 paymentGatewayService.paySuccess(order);
             } else if ("FAILED".equals(order.getOrderStatus())) {

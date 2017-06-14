@@ -69,6 +69,7 @@ public class PaymentGatewayServiceImpl implements PaymentGatewayService {
     @Override
     public void payCancel(PayOrder order) {
         order.setFinishTime(LocalDateTime.now());
+        order.setCancel(true);
         entityManager.merge(order);
         applicationContext.getBean(PaymentGatewayService.class)
                 .makeEvent(new OrderPayCancellation(payableSystemService.getOrder(order.getPayableOrderId()), order));

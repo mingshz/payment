@@ -31,6 +31,11 @@ public class DemoPaymentForm implements PaymentForm {
         return payOrder;
     }
 
+    @Override
+    public void orderMaintain() {
+
+    }
+
     @EventListener(MockPaymentEvent.class)
     public void event(MockPaymentEvent event) {
         // 我们很直接！

@@ -10,6 +10,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.From;
+import javax.persistence.criteria.Predicate;
 import java.time.LocalDateTime;
 
 /**
@@ -45,7 +48,6 @@ public class PayOrder {
 
     /**
      * 完成时间
-     * 这个属性作用非常重要；一旦状态完成则不可再行更变或者散发事件
      */
     @Column(columnDefinition = "timestamp")
     private LocalDateTime finishTime;
@@ -55,6 +57,12 @@ public class PayOrder {
      */
     @Column(columnDefinition = "timestamp")
     private LocalDateTime startTime;
+
+    /**
+     * 是否已取消
+     * 这个属性作用非常重要；一旦状态完成则不可再行更变或者散发事件
+     */
+    private boolean cancel;
 
     /**
      * 是否成功的标记位
@@ -71,5 +79,14 @@ public class PayOrder {
                 ", startTime=" + startTime +
                 ", success=" + success +
                 '}';
+    }
+
+    /**
+     * @param from            from
+     * @param criteriaBuilder cb
+     * @return 是否成功的谓语
+     */
+    public static Predicate Success(From<?, ? extends PayOrder> from, CriteriaBuilder criteriaBuilder) {
+        return criteriaBuilder.isTrue(from.get("success"));
     }
 }
