@@ -13,6 +13,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.From;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.time.LocalDateTime;
 
 /**
@@ -88,5 +89,9 @@ public class PayOrder {
      */
     public static Predicate Success(From<?, ? extends PayOrder> from, CriteriaBuilder criteriaBuilder) {
         return criteriaBuilder.isTrue(from.get("success"));
+    }
+
+    public static Predicate Cancel(From<?, ? extends PayOrder> from, CriteriaBuilder criteriaBuilder) {
+        return criteriaBuilder.isTrue(from.get("cancel"));
     }
 }

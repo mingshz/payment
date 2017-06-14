@@ -90,8 +90,10 @@ public class PaymaxPaymentFormImpl implements PaymaxPaymentForm {
         Root<PaymaxPayOrder> root = criteriaQuery.from(PaymaxPayOrder.class);
         criteriaQuery = criteriaQuery.where(
                 criteriaBuilder.and(
+                        // 未成功而且未失败
                         criteriaBuilder.equal(root.get("orderStatus"), "SUCCEED")
-                        , PayOrder.Success(root, criteriaBuilder)
+                        , PayOrder.Success(root, criteriaBuilder).not()
+                        , PayOrder.Cancel(root, criteriaBuilder).not()
                 )
         );
         entityManager.createQuery(criteriaQuery)
