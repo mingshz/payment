@@ -6,6 +6,7 @@ import me.jiangcai.payment.entity.PayOrder;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 
 /**
  * @author CJ
@@ -21,7 +22,13 @@ public class PaymaxPayOrder extends PayOrder {
     @Column(length = 100)
     private String scanUrl;
     /**
+     * 一段脚本可以引导支付
+     */
+    @Lob
+    private String javascriptToPay;
+    /**
      * 我们自己产生的编码UUID
+     *
      * @see com.paymax.model.Charge#orderNo
      */
     @Column(length = 32)

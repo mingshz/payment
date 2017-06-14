@@ -13,5 +13,10 @@ public enum PaymaxChannel {
      * 微信扫码
      * 需要额外参数openId
      */
-    wechatScan
+    wechatScan,
+    /**
+     * 微信公众号
+     * 需要额外参数openId
+     */
+    wechat
 }

@@ -61,6 +61,9 @@ public class PaymaxPaymentFormImpl implements PaymaxPaymentForm {
                 // credential.wechat_csb.qr_code
                 Map csb = (Map) charge.getCredential().get("wechat_csb");
                 payOrder.setScanUrl((String) csb.get("qr_code"));
+            } else if (channel == PaymaxChannel.wechat) {
+                charge = paymaxService.createWechatCharge(chargeRequest, (String) additionalParameters.get("openId"));
+                payOrder.setJavascriptToPay(paymaxService.javascriptForWechatCharge(charge));
             } else
                 throw new IllegalArgumentException("未知的支付意图");
         } catch (PaymaxException | IOException e) {
