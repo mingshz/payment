@@ -48,6 +48,12 @@
             <version>1.16.6</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.32</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <repositories>

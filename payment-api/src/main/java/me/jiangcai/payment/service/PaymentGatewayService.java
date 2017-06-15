@@ -27,20 +27,26 @@ public interface PaymentGatewayService {
 
     /**
      * 内部方法！！切勿调用！！
+     *
      * @param event
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
+//    @Transactional(propagation = Propagation.NESTED)
     void makeEvent(PaymentEvent event);
     // 应当尽量谨慎处理事务，因为我们需要确保先保存支付原始信息，再开启事务让客户项目介入（即使之后发生问题，客户项目也可以根据历史记录手动完成其他流程）
 
     /**
      * 订单支付完成
+     *
+     * @param order 同一事务内的支付订单
      */
     @Transactional
     void paySuccess(PayOrder order);
 
     /**
      * 订单支付取消
+     *
+     * @param order 同一事务内的支付订单
      */
     @Transactional
     void payCancel(PayOrder order);

@@ -11,7 +11,13 @@ import me.jiangcai.payment.entity.PayOrder;
 @Data
 @AllArgsConstructor
 public class PaymentEvent {
+    /**
+     * 都保证在同一事务内
+     */
     private PayableOrder payableOrder;
+    /**
+     * 都保证在同一事务内
+     */
     private PayOrder payOrder;
 
     /**
