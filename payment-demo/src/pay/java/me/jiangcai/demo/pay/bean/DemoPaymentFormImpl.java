@@ -1,9 +1,9 @@
 package me.jiangcai.demo.pay.bean;
 
+import me.jiangcai.demo.pay.DemoPaymentForm;
 import me.jiangcai.demo.pay.entity.DemoPayOrder;
 import me.jiangcai.demo.project.MockPaymentEvent;
 import me.jiangcai.payment.PayableOrder;
-import me.jiangcai.payment.PaymentForm;
 import me.jiangcai.payment.entity.PayOrder;
 import me.jiangcai.payment.exception.SystemMaintainException;
 import me.jiangcai.payment.service.PaymentGatewayService;
@@ -19,7 +19,7 @@ import java.util.UUID;
  * @author CJ
  */
 @Service
-public class DemoPaymentForm implements PaymentForm {
+public class DemoPaymentFormImpl implements DemoPaymentForm {
 
     @Autowired
     private PaymentGatewayService paymentGatewayService;
@@ -36,6 +36,7 @@ public class DemoPaymentForm implements PaymentForm {
 
     }
 
+    @Override
     @EventListener(MockPaymentEvent.class)
     public void event(MockPaymentEvent event) {
         // 我们很直接！

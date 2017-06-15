@@ -3,12 +3,17 @@ package me.jiangcai.payment.test;
 import com.google.common.base.Predicate;
 import me.jiangcai.demo.project.DatasourceConfig;
 import me.jiangcai.demo.project.DemoProjectConfig;
+import me.jiangcai.demo.project.entity.DemoTradeOrder;
+import me.jiangcai.demo.project.repository.DemoTradeOrderRepository;
 import me.jiangcai.lib.test.SpringWebTest;
+import me.jiangcai.payment.PaymentForm;
+import me.jiangcai.payment.service.PaymentService;
 import me.jiangcai.payment.test.page.IndexPage;
 import me.jiangcai.payment.test.page.PayPage;
 import org.apache.commons.lang.RandomStringUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
 
@@ -22,6 +27,11 @@ import java.math.BigDecimal;
 @WebAppConfiguration
 public abstract class PaymentTest extends SpringWebTest {
 
+    @Autowired
+    private PaymentService paymentService;
+    @Autowired
+    private DemoTradeOrderRepository demoTradeOrderRepository;
+
     /**
      * 测试订单流程
      *
@@ -34,6 +44,18 @@ public abstract class PaymentTest extends SpringWebTest {
         payPage.makePay();
 
         assertPaySuccess();
+
+        payPage = makeOrderFor(formName);
+
+        // 模拟支付
+        DemoTradeOrder order = demoTradeOrderRepository.getOne(payPage.orderId());
+        paymentService.mockPay(order);
+
+        assertPaySuccess();
+    }
+
+    protected void testOrderFor(Class<? extends PaymentForm> form) {
+
     }
 
     protected void assertPaySuccess() {

@@ -3,6 +3,7 @@ package me.jiangcai.payment.test.page;
 import me.jiangcai.lib.test.page.AbstractPage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.springframework.util.NumberUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,5 +27,9 @@ public class PayPage extends AbstractPage {
         printThisPage();
         webDriver.findElement(By.id("pay"))
                 .click();
+    }
+
+    public Long orderId() {
+        return NumberUtils.parseNumber(webDriver.findElement(By.tagName("body")).getAttribute("data-id"), Long.class);
     }
 }

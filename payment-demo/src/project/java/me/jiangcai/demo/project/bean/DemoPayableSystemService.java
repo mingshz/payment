@@ -1,5 +1,6 @@
 package me.jiangcai.demo.project.bean;
 
+import me.jiangcai.demo.project.entity.DemoTradeOrder;
 import me.jiangcai.demo.project.repository.DemoTradeOrderRepository;
 import me.jiangcai.payment.PayableOrder;
 import me.jiangcai.payment.entity.PayOrder;
@@ -23,9 +24,12 @@ public class DemoPayableSystemService implements PayableSystemService {
     private DemoTradeOrderRepository demoTradeOrderRepository;
 
     @EventListener(OrderPaySuccess.class)
+//    @Transactional
     public void paySuccess(OrderPaySuccess event) {
-        demoTradeOrderRepository.getOne(Long.parseLong(event.getPayableOrder().getPayableOrderId().toString()))
-                .setDone(true);
+        DemoTradeOrder demoTradeOrder = (DemoTradeOrder) event.getPayableOrder();
+        demoTradeOrder.setDone(true);
+//        demoTradeOrderRepository.getOne(Long.parseLong(event.getPayableOrder().getPayableOrderId().toString()))
+//                .setDone(true);
     }
 
     @Override

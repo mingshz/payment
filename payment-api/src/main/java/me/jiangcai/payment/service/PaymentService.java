@@ -25,7 +25,8 @@ public interface PaymentService {
 
     /**
      * 引导用户支付
-     * 在支付完成之后发布{@link me.jiangcai.payment.event.OrderPaySuccess}事件并引导至{@link PayableSystemService#paySuccess(HttpServletRequest, PayableOrder, PayOrder)}。
+     * 在支付完成之后发布{@link me.jiangcai.payment.event.OrderPaySuccess}事件并引导至
+     * {@link PayableSystemService#paySuccess(HttpServletRequest, PayableOrder, PayOrder)}。
      * 如果支付方式支持的话可能会发布{@link me.jiangcai.payment.event.OrderPayCancellation}事件。
      * <p>
      * <p>最终结果Model中将包括以下几个元素:</p>
@@ -44,7 +45,8 @@ public interface PaymentService {
      * @throws SystemMaintainException 支付系统维护中
      */
     @Transactional
-    ModelAndView startPay(HttpServletRequest request, PayableOrder order, PaymentForm form, Map<String, Object> additionalParameters) throws SystemMaintainException;
+    ModelAndView startPay(HttpServletRequest request, PayableOrder order, PaymentForm form
+            , Map<String, Object> additionalParameters) throws SystemMaintainException;
     // 之后用户或者客户项目会产生什么期待呢？
     // 用户的期待是看到支付成功的页面 或者失败，取消
     // 客户项目则是希望收获成功支付的事件 或者失败，取消
@@ -56,5 +58,13 @@ public interface PaymentService {
     @Transactional(readOnly = true)
     PayOrder payOrder(long id);
 
+    /**
+     * 模拟支付该订单
+     * 前提是已经成功创建了相关的支付订单；
+     *
+     * @param order 需支付的订单，需要确保{@link PayableOrder#getPayableOrderId()}已经可用了
+     */
+    @Transactional
+    void mockPay(PayableOrder order);
 
 }
