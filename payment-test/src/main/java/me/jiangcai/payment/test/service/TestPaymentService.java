@@ -48,12 +48,13 @@ public class TestPaymentService extends PaymentServiceImpl {
         try {
             Integer paySeconds = mockPayToggle.autoPaySeconds(payableOrder, payOrder);
             if (paySeconds != null) {
+//                this.mockPay(payableOrder);
                 executorService.schedule(()
-                        -> paymentGatewayService.paySuccess(payOrder), paySeconds, TimeUnit.SECONDS);
+                        -> mockPay(payableOrder), paySeconds, TimeUnit.SECONDS);
             }
         } catch (Exception e) {
-            executorService.schedule(()
-                    -> paymentGatewayService.payCancel(payOrder), 1, TimeUnit.SECONDS);
+//            executorService.schedule(()
+//                    -> paymentGatewayService.payCancel(payOrder), 1, TimeUnit.SECONDS);
         }
 
         return modelAndView;

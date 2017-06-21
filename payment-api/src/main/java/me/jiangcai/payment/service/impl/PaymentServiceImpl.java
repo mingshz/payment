@@ -70,17 +70,23 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void mockPay(PayableOrder order) {
-        log.info("准备模拟支付" + order);
-        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<PayOrder> orderCriteriaQuery = criteriaBuilder.createQuery(PayOrder.class);
-        Root<PayOrder> root = orderCriteriaQuery.from(PayOrder.class);
-        PayOrder payOrder = entityManager.createQuery(orderCriteriaQuery
-                .where(criteriaBuilder.equal(root.get("payableOrderId"), order.getPayableOrderId().toString())))
-                .getResultList().stream()
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("找不到付款订单"));
+    public boolean mockPay(PayableOrder order) {
+        try {
+            log.info("准备模拟支付" + order);
+            final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<PayOrder> orderCriteriaQuery = criteriaBuilder.createQuery(PayOrder.class);
+            Root<PayOrder> root = orderCriteriaQuery.from(PayOrder.class);
+            PayOrder payOrder = entityManager.createQuery(orderCriteriaQuery
+                    .where(criteriaBuilder.equal(root.get("payableOrderId"), order.getPayableOrderId().toString())))
+                    .getResultList().stream()
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("找不到付款订单"));
 
-        paymentGatewayService.paySuccess(payOrder);
+            paymentGatewayService.paySuccess(payOrder);
+            return true;
+        } catch (Throwable ex) {
+            log.error("模拟支付时出现问题", ex);
+            return false;
+        }
     }
 }

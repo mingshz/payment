@@ -61,10 +61,12 @@ public interface PaymentService {
     /**
      * 模拟支付该订单
      * 前提是已经成功创建了相关的支付订单；
+     * 模拟支付并不会抛出任何异常
      *
      * @param order 需支付的订单，需要确保{@link PayableOrder#getPayableOrderId()}已经可用了
+     * @return true for success
      */
     @Transactional
-    void mockPay(PayableOrder order);
+    boolean mockPay(PayableOrder order);
 
 }
