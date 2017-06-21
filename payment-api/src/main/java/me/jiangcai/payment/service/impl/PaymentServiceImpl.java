@@ -7,6 +7,8 @@ import me.jiangcai.payment.exception.SystemMaintainException;
 import me.jiangcai.payment.service.PayableSystemService;
 import me.jiangcai.payment.service.PaymentGatewayService;
 import me.jiangcai.payment.service.PaymentService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,6 +28,7 @@ import java.util.Map;
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
+    private static final Log log = LogFactory.getLog(PaymentServiceImpl.class);
     @Autowired
     private PayableSystemService payableSystemService;
     @SuppressWarnings("SpringJavaAutowiringInspection")
@@ -68,6 +71,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public void mockPay(PayableOrder order) {
+        log.info("准备模拟支付" + order);
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<PayOrder> orderCriteriaQuery = criteriaBuilder.createQuery(PayOrder.class);
         Root<PayOrder> root = orderCriteriaQuery.from(PayOrder.class);

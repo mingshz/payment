@@ -1,6 +1,6 @@
 package me.jiangcai.demo.project.bean;
 
-import me.jiangcai.demo.project.MockPaymentEvent;
+import me.jiangcai.payment.MockPaymentEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;

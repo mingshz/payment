@@ -1,11 +1,14 @@
 package me.jiangcai.payment.test.service;
 
+import me.jiangcai.demo.pay.DemoPaymentForm;
 import me.jiangcai.payment.PayableOrder;
 import me.jiangcai.payment.PaymentForm;
 import me.jiangcai.payment.entity.PayOrder;
 import me.jiangcai.payment.exception.SystemMaintainException;
 import me.jiangcai.payment.service.PaymentGatewayService;
 import me.jiangcai.payment.service.impl.PaymentServiceImpl;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -25,16 +28,20 @@ import java.util.concurrent.TimeUnit;
 @Primary
 public class TestPaymentService extends PaymentServiceImpl {
 
+    private static final Log log = LogFactory.getLog(TestPaymentService.class);
+    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     @Autowired
     private MockPayToggle mockPayToggle;
     @Autowired
     private PaymentGatewayService paymentGatewayService;
-    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+    @Autowired
+    private DemoPaymentForm demoPaymentForm;
 
     @Override
     public ModelAndView startPay(HttpServletRequest request, PayableOrder order, PaymentForm form, Map<String, Object> additionalParameters)
             throws SystemMaintainException {
-        ModelAndView modelAndView = super.startPay(request, order, form, additionalParameters);
+        log.info("使用测试支付方式");
+        ModelAndView modelAndView = super.startPay(request, order, demoPaymentForm, additionalParameters);
         PayOrder payOrder = (PayOrder) modelAndView.getModel().get("payOrder");
         PayableOrder payableOrder = (PayableOrder) modelAndView.getModel().get("order");
 

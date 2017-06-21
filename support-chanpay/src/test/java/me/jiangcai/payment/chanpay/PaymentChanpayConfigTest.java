@@ -3,7 +3,7 @@ package me.jiangcai.payment.chanpay;
 import me.jiangcai.chanpay.event.TradeEvent;
 import me.jiangcai.chanpay.model.TradeStatus;
 import me.jiangcai.chanpay.test.ChanpayTestSpringConfig;
-import me.jiangcai.demo.project.MockPaymentEvent;
+import me.jiangcai.payment.MockPaymentEvent;
 import me.jiangcai.payment.test.PaymentTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,11 @@ import java.time.LocalDateTime;
  */
 @ContextConfiguration(classes = {PaymentChanpayConfig.class, ChanpayTestSpringConfig.class, PaymentChanpayConfigTest.Config.class})
 public class PaymentChanpayConfigTest extends PaymentTest {
+
+    @Test
+    public void go() throws Exception {
+        testOrderFor("畅捷支付");
+    }
 
     static class Config {
         @Autowired
@@ -35,11 +40,6 @@ public class PaymentChanpayConfigTest extends PaymentTest {
             tradeEvent.setTradeTime(LocalDateTime.now());
             applicationEventPublisher.publishEvent(tradeEvent);
         }
-    }
-
-    @Test
-    public void go() throws Exception {
-        testOrderFor("畅捷支付");
     }
 
 

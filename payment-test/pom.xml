@@ -42,15 +42,20 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>../payment-demo/src/pay/resources</directory>
+            </resource>
+        </resources>
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>
             </testResource>
             <testResource>
                 <directory>../payment-demo/src/unit/resources</directory>
-            </testResource>
-            <testResource>
-                <directory>../payment-demo/src/pay/resources</directory>
             </testResource>
             <testResource>
                 <directory>../payment-demo/src/project/resources</directory>
@@ -71,6 +76,9 @@
                                 <copy todir="target/demo-sources">
                                     <fileset dir="../payment-demo/src/project/java"/>
                                     <fileset dir="../payment-demo/src/unit/java"/>
+                                </copy>
+                                <!--clean的时候 应该删除它们-->
+                                <copy todir="src/pay/java">
                                     <fileset dir="../payment-demo/src/pay/java"/>
                                 </copy>
                             </tasks>
@@ -83,6 +91,18 @@
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <version>1.9.1</version>
                 <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>src/pay/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>add-test-source</id>
                         <phase>generate-test-sources</phase>

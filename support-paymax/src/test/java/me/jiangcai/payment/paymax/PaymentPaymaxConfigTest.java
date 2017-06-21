@@ -2,7 +2,7 @@ package me.jiangcai.payment.paymax;
 
 import com.paymax.model.Charge;
 import com.paymax.spring.event.ChargeChangeEvent;
-import me.jiangcai.demo.project.MockPaymentEvent;
+import me.jiangcai.payment.MockPaymentEvent;
 import me.jiangcai.payment.test.PaymentTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +17,11 @@ import org.springframework.test.context.ContextConfiguration;
  */
 @ContextConfiguration(classes = {PaymentPaymaxConfig.class, PaymentPaymaxConfigTest.Config.class})
 public class PaymentPaymaxConfigTest extends PaymentTest {
+
+    @Test
+    public void go() throws Exception {
+        testOrderFor("拉卡拉微信扫码支付");
+    }
 
     @Configuration
     @PropertySource("classpath:/test_paymax.properties")
@@ -38,11 +43,6 @@ public class PaymentPaymaxConfigTest extends PaymentTest {
 //            tradeEvent.setTradeTime(LocalDateTime.now());
             applicationEventPublisher.publishEvent(tradeEvent);
         }
-    }
-
-    @Test
-    public void go() throws Exception {
-        testOrderFor("拉卡拉微信扫码支付");
     }
 
 }
