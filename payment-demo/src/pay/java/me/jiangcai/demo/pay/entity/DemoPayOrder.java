@@ -9,4 +9,8 @@ import javax.persistence.Entity;
  */
 @Entity
 public class DemoPayOrder extends PayOrder {
+    @Override
+    public boolean isTestOrder() {
+        return true;
+    }
 }

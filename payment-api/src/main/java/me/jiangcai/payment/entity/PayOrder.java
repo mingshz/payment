@@ -13,7 +13,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.From;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.time.LocalDateTime;
 
 /**
@@ -70,6 +69,19 @@ public class PayOrder {
      */
     private boolean success;
 
+    /**
+     * @param from            from
+     * @param criteriaBuilder cb
+     * @return 是否成功的谓语
+     */
+    public static Predicate Success(From<?, ? extends PayOrder> from, CriteriaBuilder criteriaBuilder) {
+        return criteriaBuilder.isTrue(from.get("success"));
+    }
+
+    public static Predicate Cancel(From<?, ? extends PayOrder> from, CriteriaBuilder criteriaBuilder) {
+        return criteriaBuilder.isTrue(from.get("cancel"));
+    }
+
     @Override
     public String toString() {
         return "PayOrder{" +
@@ -83,15 +95,9 @@ public class PayOrder {
     }
 
     /**
-     * @param from            from
-     * @param criteriaBuilder cb
-     * @return 是否成功的谓语
+     * @return 测试用订单
      */
-    public static Predicate Success(From<?, ? extends PayOrder> from, CriteriaBuilder criteriaBuilder) {
-        return criteriaBuilder.isTrue(from.get("success"));
-    }
-
-    public static Predicate Cancel(From<?, ? extends PayOrder> from, CriteriaBuilder criteriaBuilder) {
-        return criteriaBuilder.isTrue(from.get("cancel"));
+    public boolean isTestOrder() {
+        return false;
     }
 }
