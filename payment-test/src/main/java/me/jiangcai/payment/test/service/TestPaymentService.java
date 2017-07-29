@@ -2,6 +2,7 @@ package me.jiangcai.payment.test.service;
 
 import me.jiangcai.demo.pay.DemoPaymentForm;
 import me.jiangcai.payment.PayableOrder;
+import me.jiangcai.payment.PaymentConfig;
 import me.jiangcai.payment.PaymentForm;
 import me.jiangcai.payment.entity.PayOrder;
 import me.jiangcai.payment.exception.SystemMaintainException;
@@ -40,6 +41,9 @@ public class TestPaymentService extends PaymentServiceImpl {
     @Override
     public ModelAndView startPay(HttpServletRequest request, PayableOrder order, PaymentForm form, Map<String, Object> additionalParameters)
             throws SystemMaintainException {
+        if (additionalParameters != null && additionalParameters.containsKey(PaymentConfig.SKIP_TEST_PARAMETER_NAME)) {
+            return super.startPay(request, order, form, additionalParameters);
+        }
         log.info("使用测试支付方式");
         ModelAndView modelAndView = super.startPay(request, order, demoPaymentForm, additionalParameters);
         PayOrder payOrder = (PayOrder) modelAndView.getModel().get("payOrder");

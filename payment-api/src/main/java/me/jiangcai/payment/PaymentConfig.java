@@ -17,4 +17,9 @@ import org.springframework.context.annotation.Configuration;
         , "me.jiangcai.payment.controller"
 })
 public class PaymentConfig {
+
+    /**
+     * 传入可以跳过测试的参数
+     */
+    public static final String SKIP_TEST_PARAMETER_NAME = "me.jiangcai.payment.test.SKIP_TEST_PARAMETER_NAME";
 }
