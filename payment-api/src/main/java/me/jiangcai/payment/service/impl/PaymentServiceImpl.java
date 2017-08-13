@@ -82,6 +82,9 @@ public class PaymentServiceImpl implements PaymentService {
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("找不到付款订单"));
 
+            if (payOrder.isSuccess())
+                return true;
+
             paymentGatewayService.paySuccess(payOrder);
             return true;
         } catch (Throwable ex) {

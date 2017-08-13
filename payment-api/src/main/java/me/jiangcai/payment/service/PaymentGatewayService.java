@@ -2,8 +2,6 @@ package me.jiangcai.payment.service;
 
 import me.jiangcai.payment.entity.PayOrder;
 import me.jiangcai.payment.event.PaymentEvent;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Query;
@@ -30,8 +28,9 @@ public interface PaymentGatewayService {
      *
      * @param event
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
+//    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
 //    @Transactional(propagation = Propagation.NESTED)
+    @Transactional
     void makeEvent(PaymentEvent event);
     // 应当尽量谨慎处理事务，因为我们需要确保先保存支付原始信息，再开启事务让客户项目介入（即使之后发生问题，客户项目也可以根据历史记录手动完成其他流程）
 

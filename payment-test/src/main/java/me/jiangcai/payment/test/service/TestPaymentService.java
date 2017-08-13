@@ -54,7 +54,12 @@ public class TestPaymentService extends PaymentServiceImpl {
             if (paySeconds != null) {
 //                this.mockPay(payableOrder);
                 executorService.schedule(()
-                        -> mockPay(payableOrder), paySeconds, TimeUnit.SECONDS);
+                                -> {
+                            synchronized (("autoPaySeconds-" + payableOrder.getPayableOrderId().toString()).intern()) {
+                                mockPay(payableOrder);
+                            }
+                        }
+                        , paySeconds, TimeUnit.SECONDS);
             }
         } catch (Exception e) {
 //            executorService.schedule(()
