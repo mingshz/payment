@@ -1,5 +1,6 @@
 package me.jiangcai.payment.service.impl;
 
+import me.jiangcai.payment.PaymentForm;
 import me.jiangcai.payment.entity.PayOrder;
 import me.jiangcai.payment.event.OrderPayCancellation;
 import me.jiangcai.payment.event.OrderPaySuccess;
@@ -86,5 +87,28 @@ public class PaymentGatewayServiceImpl implements PaymentGatewayService {
                                 , criteriaBuilder.isTrue(root.get("success"))));
         TypedQuery<PayOrder> query = entityManager.createQuery(criteriaQuery);
         return query.getSingleResult();
+    }
+
+    @Override
+    public PayOrder getLatestOrder(String payableOrderId) {
+        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<PayOrder> criteriaQuery = criteriaBuilder.createQuery(PayOrder.class);
+        Root<PayOrder> root = criteriaQuery.from(PayOrder.class);
+        criteriaQuery = criteriaQuery
+                .where(criteriaBuilder.equal(root.get("payableOrderId"), payableOrderId))
+                .orderBy(criteriaBuilder.desc(root.get("startTime")));
+        TypedQuery<PayOrder> query = entityManager.createQuery(criteriaQuery).setMaxResults(1);
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
+    }
+
+    @Override
+    public void queryPayStatus(PayOrder order) {
+        PaymentForm form = applicationContext.getBean(order.getPaymentFormClass());
+        if (form.isSupportPayOrderStatusQuerying())
+            form.queryPayStatus(order);
     }
 }

@@ -2,7 +2,9 @@ package me.jiangcai.payment.paymax.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.jiangcai.payment.PaymentForm;
 import me.jiangcai.payment.entity.PayOrder;
+import me.jiangcai.payment.paymax.PaymaxPaymentForm;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,4 +43,8 @@ public class PaymaxPayOrder extends PayOrder {
     private String orderStatus;
 
 
+    @Override
+    public Class<? extends PaymentForm> getPaymentFormClass() {
+        return PaymaxPaymentForm.class;
+    }
 }

@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -38,7 +39,12 @@ public class PaymentSupportController {
     private ApplicationContext applicationContext;
 
     @RequestMapping(method = RequestMethod.GET, value = "/completed/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
     public ResponseEntity<Boolean> completed(@PathVariable("id") String id) {
+        PayOrder order = paymentGatewayService.getLatestOrder(id);
+        if (order != null) {
+            paymentGatewayService.queryPayStatus(order);
+        }
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(payableSystemService.isPaySuccess(id));

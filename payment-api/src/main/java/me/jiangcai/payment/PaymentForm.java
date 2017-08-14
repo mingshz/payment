@@ -1,6 +1,7 @@
 package me.jiangcai.payment;
 
 import me.jiangcai.payment.entity.PayOrder;
+import me.jiangcai.payment.event.OrderPaySuccess;
 import me.jiangcai.payment.exception.SystemMaintainException;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,4 +40,22 @@ public interface PaymentForm {
      */
     @Transactional
     void orderMaintain();
+
+    /**
+     * @return 是否支持订单状态主动查询
+     */
+    default boolean isSupportPayOrderStatusQuerying() {
+        return false;
+    }
+
+    /**
+     * 订单状态主动查询
+     * 如果成功应该抛出{@link OrderPaySuccess}
+     *
+     * @param order 支付订单
+     */
+    @Transactional
+    default void queryPayStatus(PayOrder order) {
+
+    }
 }

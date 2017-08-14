@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.UUID;
 
 /**
@@ -38,24 +39,33 @@ public class DemoController {
     }
 
     @RequestMapping(value = "/goOrder")
-    public ModelAndView goOrder(HttpServletRequest request, BigDecimal amount, String name, String type) throws SystemMaintainException, ClassNotFoundException {
+    public ModelAndView goOrder(HttpServletRequest request, BigDecimal amount, String name, String type)
+            throws SystemMaintainException, ClassNotFoundException {
         DemoTradeOrder order = new DemoTradeOrder();
         order.setOrderDueAmount(amount);
         order.setOrderProductName(name);
         order = demoTradeOrderRepository.saveAndFlush(order);
 
         // 如果是拉卡拉支付的话，应该更加具体的选择 微信扫码 或者 网页网关
+        Map<String, Object> additionalParameters = new HashMap<>();
         String[] d = type.split("\\|");
         type = d[0];
-
-        Map<String, Object> additionalParameters = null;
-        if (d.length > 1 && d[1].equals("wechatScan")) {
-            additionalParameters = new HashMap<>();
-            additionalParameters.put("channel", d[1]);
-            additionalParameters.put("openId", UUID.randomUUID().toString());
-        }
+        String[] toParameters = new String[d.length - 1];
+        System.arraycopy(d, 1, toParameters, 0, d.length - 1);
+        setupAdditionalParameters(additionalParameters, toParameters);
 
         return paymentService.startPay(request, order, (PaymentForm) applicationContext.getBean(Class.forName(type)), additionalParameters);
+    }
+
+    private void setupAdditionalParameters(Map<String, Object> additionalParameters, String[] toParameters) {
+        for (String parameter : toParameters) {
+            StringTokenizer tokenizer = new StringTokenizer(parameter, ":");
+            String name = tokenizer.nextToken();
+            String value = tokenizer.nextToken();
+            additionalParameters.put(name, value);
+            if ("channel".equals(name) && "wechatScan".equals(value))
+                additionalParameters.put("openId", UUID.randomUUID().toString());
+        }
     }
 
 }

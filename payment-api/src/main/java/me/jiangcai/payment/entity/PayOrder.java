@@ -2,6 +2,7 @@ package me.jiangcai.payment.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.jiangcai.payment.PaymentForm;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,7 +25,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class PayOrder {
+public abstract class PayOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -53,7 +54,7 @@ public class PayOrder {
     private LocalDateTime finishTime;
 
     /**
-     * 完成时间
+     * 开始支付时间
      */
     @Column(columnDefinition = "timestamp")
     private LocalDateTime startTime;
@@ -100,4 +101,9 @@ public class PayOrder {
     public boolean isTestOrder() {
         return false;
     }
+
+    /**
+     * @return 支持该订单的支付方式
+     */
+    public abstract Class<? extends PaymentForm> getPaymentFormClass();
 }

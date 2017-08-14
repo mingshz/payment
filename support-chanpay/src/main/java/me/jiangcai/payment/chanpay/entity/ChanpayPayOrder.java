@@ -3,6 +3,8 @@ package me.jiangcai.payment.chanpay.entity;
 import lombok.Getter;
 import lombok.Setter;
 import me.jiangcai.chanpay.model.TradeStatus;
+import me.jiangcai.payment.PaymentForm;
+import me.jiangcai.payment.chanpay.service.ChanpayPaymentForm;
 import me.jiangcai.payment.entity.PayOrder;
 
 import javax.persistence.Column;
@@ -33,5 +35,10 @@ public class ChanpayPayOrder extends PayOrder {
                 ", wechat=" + wechat +
                 ", tradeStatus=" + tradeStatus +
                 "} " + super.toString();
+    }
+
+    @Override
+    public Class<? extends PaymentForm> getPaymentFormClass() {
+        return ChanpayPaymentForm.class;
     }
 }

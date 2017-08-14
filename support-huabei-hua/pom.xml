@@ -10,10 +10,7 @@
         <version>1.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>support-chanpay</artifactId>
-    <description>
-        支持畅捷支付
-    </description>
+    <artifactId>support-huabei-hua</artifactId>
 
     <dependencies>
         <dependency>
@@ -28,11 +25,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>me.jiangcai.chanpay</groupId>
-            <artifactId>chanpay-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>me.jiangcai.lib</groupId>
             <artifactId>spring</artifactId>
             <version>${jiangcai.version}</version>
@@ -45,10 +37,14 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>me.jiangcai.chanpay</groupId>
-            <artifactId>chanpay-test</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>test</scope>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.7.5</version>
         </dependency>
     </dependencies>
 
@@ -106,6 +102,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>

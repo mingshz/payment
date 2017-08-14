@@ -36,4 +36,14 @@ public class DemoTradeOrder implements PayableOrder {
     public String getOrderBody() {
         return orderProductName+"的详情";
     }
+
+    @Override
+    public String getOrderProductModel() {
+        return orderProductName;
+    }
+
+    @Override
+    public String getOrderProductCode() {
+        return orderProductName;
+    }
 }

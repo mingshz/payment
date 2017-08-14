@@ -57,4 +57,19 @@ public interface PaymentGatewayService {
      */
     @Transactional(readOnly = true)
     PayOrder getSuccessOrder(String payableOrderId);
+
+    /**
+     * @param payableOrderId 客户项目的订单主键
+     * @return 刚刚准备的支付订单
+     */
+    @Transactional(readOnly = true)
+    PayOrder getLatestOrder(String payableOrderId);
+
+    /**
+     * 检查支付状态；如果供应商不支持可以跳过
+     *
+     * @param order 事务内支付订单
+     */
+    @Transactional
+    void queryPayStatus(PayOrder order);
 }

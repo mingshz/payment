@@ -35,4 +35,14 @@ public interface PayableOrder {
      * @return 详细的商品描述
      */
     String getOrderBody();
+
+    /**
+     * @return 订单商品型号
+     */
+    String getOrderProductModel();
+
+    /**
+     * @return 订单商品编号
+     */
+    String getOrderProductCode();
 }
