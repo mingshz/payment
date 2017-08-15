@@ -25,7 +25,8 @@ public class HuabeiConfigTest extends PaymentTest {
 
     @Test
     public void go() throws Exception {
-        testOrderFor("华院花呗支付", false, 5 * 60);
+//        testOrderFor("华院花呗支付", false, 5 * 60);
+        testOrderFor("华院花呗支付");
     }
 
     @Configuration
