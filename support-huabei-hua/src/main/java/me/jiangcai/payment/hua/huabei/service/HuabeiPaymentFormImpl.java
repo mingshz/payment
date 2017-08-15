@@ -81,8 +81,8 @@ public class HuabeiPaymentFormImpl implements HuabeiPaymentForm {
         parameters.put("shopID", shopID);
         parameters.put("aliPid", aliPid);
         parameters.put("periods", additionalParameters.getOrDefault(PERIODS, 12));
-        parameters.put("customerName", additionalParameters.get(NAME));
-        parameters.put("telNo", additionalParameters.get(MOBILE));
+        parameters.put("customerName", order.getOrderedName());
+        parameters.put("telNo", order.getOrderedMobile());
         parameters.put("price", order.getOrderDueAmount().setScale(2, BigDecimal.ROUND_HALF_UP));
 //        parameters.put("productName", order.getOrderProductName());
         parameters.put("brandName", order.getOrderProductBrand());

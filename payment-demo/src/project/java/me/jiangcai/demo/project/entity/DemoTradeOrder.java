@@ -51,4 +51,14 @@ public class DemoTradeOrder implements PayableOrder {
     public String getOrderProductBrand() {
         return orderProductName;
     }
+
+    @Override
+    public String getOrderedName() {
+        return "匿名";
+    }
+
+    @Override
+    public String getOrderedMobile() {
+        return "18812341234";
+    }
 }

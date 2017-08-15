@@ -7,6 +7,4 @@ import me.jiangcai.payment.PaymentForm;
  */
 public interface HuabeiPaymentForm extends PaymentForm {
     String PERIODS = "HUABEI_PERIODS";
-    String NAME = "HUABEI_NAME";
-    String MOBILE = "HUABEI_MOBILE";
 }

@@ -50,4 +50,14 @@ public interface PayableOrder {
      * @return 订单商品品牌
      */
     String getOrderProductBrand();
+
+    /**
+     * @return 下单者姓名
+     */
+    String getOrderedName();
+
+    /**
+     * @return 下单者手机
+     */
+    String getOrderedMobile();
 }
