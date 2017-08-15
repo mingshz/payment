@@ -34,6 +34,14 @@ public class HuaHuabeiPayOrder extends PayOrder {
     @Column(scale = 2, precision = 10)
     private BigDecimal capitalAmount;
 
+    @Override
+    public String toString() {
+        return "HuaHuabeiPayOrder{" +
+                "aliPayCodeUrl='" + aliPayCodeUrl + '\'' +
+                ", poundageAmount=" + poundageAmount +
+                ", capitalAmount=" + capitalAmount +
+                "} " + super.toString();
+    }
 
     @Override
     public Class<? extends PaymentForm> getPaymentFormClass() {

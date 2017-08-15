@@ -45,4 +45,9 @@ public interface PayableOrder {
      * @return 订单商品编号
      */
     String getOrderProductCode();
+
+    /**
+     * @return 订单商品品牌
+     */
+    String getOrderProductBrand();
 }

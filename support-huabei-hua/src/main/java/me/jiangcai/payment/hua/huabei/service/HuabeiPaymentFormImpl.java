@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
@@ -61,11 +62,13 @@ public class HuabeiPaymentFormImpl implements HuabeiPaymentForm {
         rootUrl = environment.getProperty("huabei.url", "http://hbfq.huaat.com");
         businessID = environment.getProperty("huabei.businessID", "HBCD2040");
         shopID = environment.getProperty("huabei.shopID", "HBCD20400001");
-        aliPid = environment.getProperty("huabei.aliPid", "");
+        aliPid = environment.getProperty("huabei.aliPid", "2088721181145781");
     }
 
     private String createOrderId() {
-        return String.format("%s%-5d", LocalDateTime.now().format(dateTimeFormatter), Math.abs(random.nextInt()));
+//        17012512562347261774
+        return String.format("%s%05d", LocalDateTime.now().format(dateTimeFormatter), Math.abs(random.nextInt()))
+                .substring(0, 20);
     }
 
     @Override
@@ -75,13 +78,14 @@ public class HuabeiPaymentFormImpl implements HuabeiPaymentForm {
         Map<String, Object> parameters = new HashMap<>();
 
         parameters.put("businessID", businessID);
-        parameters.put("ShopID", shopID);
+        parameters.put("shopID", shopID);
         parameters.put("aliPid", aliPid);
         parameters.put("periods", additionalParameters.getOrDefault(PERIODS, 12));
         parameters.put("customerName", additionalParameters.get(NAME));
         parameters.put("telNo", additionalParameters.get(MOBILE));
         parameters.put("price", order.getOrderDueAmount().setScale(2, BigDecimal.ROUND_HALF_UP));
-        parameters.put("productName", order.getOrderProductName());
+//        parameters.put("productName", order.getOrderProductName());
+        parameters.put("brandName", order.getOrderProductBrand());
         parameters.put("modelName", order.getOrderProductModel());
         parameters.put("goodsID", order.getOrderProductCode());
 
@@ -105,7 +109,7 @@ public class HuabeiPaymentFormImpl implements HuabeiPaymentForm {
                 payOrder.setAliPayCodeUrl(result.get("payCode").toString());
                 payOrder.setPoundageAmount(new BigDecimal(result.get("poundageAmount").toString()));
                 payOrder.setCapitalAmount(new BigDecimal(result.get("capitalAmount").toString()));
-                log.debug("成功创建订单" + payOrder.getPlatformId());
+                log.debug("成功创建订单" + payOrder.getPlatformId() + ":" + payOrder);
                 return payOrder;
             } catch (IOException e) {
                 throw new SystemMaintainException(e);
@@ -133,10 +137,13 @@ public class HuabeiPaymentFormImpl implements HuabeiPaymentForm {
     private Map<String, Object> postJSON(String uri, Map<String, Object> parameters) throws IOException {
         try (CloseableHttpClient client = requestClient()) {
             HttpPost post = new HttpPost(rootUrl + uri);
+            final String value = JsonHandler.objectMapper.writeValueAsString(parameters);
+            log.debug("欲提交数据:" + value);
             post.setEntity(
                     EntityBuilder.create()
+                            .setContentType(ContentType.APPLICATION_FORM_URLENCODED.withCharset("UTF-8"))
                             .setParameters(new BasicNameValuePair("orderDetail"
-                                    , JsonHandler.objectMapper.writeValueAsString(parameters)))
+                                    , value))
                             .build()
             );
             return client.execute(post, new JsonHandler());
@@ -155,6 +162,7 @@ public class HuabeiPaymentFormImpl implements HuabeiPaymentForm {
         Map<String, Object> parameters = new HashMap<>();
 
         parameters.put("businessID", businessID);
+        parameters.put("shopID", shopID);
         parameters.put("aliPid", aliPid);
         parameters.put("orderID", order.getPlatformId());
 

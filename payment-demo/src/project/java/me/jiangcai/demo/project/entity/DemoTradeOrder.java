@@ -46,4 +46,9 @@ public class DemoTradeOrder implements PayableOrder {
     public String getOrderProductCode() {
         return orderProductName;
     }
+
+    @Override
+    public String getOrderProductBrand() {
+        return orderProductName;
+    }
 }
