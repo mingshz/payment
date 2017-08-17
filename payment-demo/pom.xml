@@ -76,7 +76,7 @@
                 <executions>
                     <execution>
                         <id>add-source</id>
-                        <phase>generate-sources</phase>
+                        <phase>initialize</phase>
                         <goals>
                             <goal>add-source</goal>
                         </goals>
@@ -89,7 +89,7 @@
                     </execution>
                     <execution>
                         <id>add-test-source</id>
-                        <phase>generate-sources</phase>
+                        <phase>initialize</phase>
                         <goals>
                             <goal>add-test-source</goal>
                         </goals>
