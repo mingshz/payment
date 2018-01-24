@@ -1,6 +1,7 @@
 package me.jiangcai.demo.project;
 
 import me.jiangcai.payment.PaymentConfig;
+import me.jiangcai.wx.standard.StandardWeixinConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -26,9 +27,9 @@ import java.io.IOException;
  * @author CJ
  */
 @Configuration
-@Import({PaymentConfig.class,DemoProjectConfig.ThymeleafConfig.class})
+@Import({PaymentConfig.class,DemoProjectConfig.ThymeleafConfig.class, StandardWeixinConfig.class})
 @EnableWebMvc
-@ComponentScan("me.jiangcai.demo.project.bean")
+@ComponentScan({"me.jiangcai.demo.project.bean","me.jiangcai.wx.couple"})
 @EnableJpaRepositories("me.jiangcai.demo.project.repository")
 public class DemoProjectConfig extends WebMvcConfigurerAdapter {
 

@@ -40,6 +40,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public ModelAndView startPay(HttpServletRequest request, PayableOrder order, PaymentForm form, Map<String, Object> additionalParameters) throws SystemMaintainException {
         // 我们并不需要告诉order 我们的支付细节！
+        additionalParameters.put("notifyUrl","/_payment/notify");
         PayOrder payOrder = form.newPayOrder(request, order, additionalParameters);
         payOrder.setStartTime(LocalDateTime.now());
         payOrder.setPayableOrderId(order.getPayableOrderId().toString());

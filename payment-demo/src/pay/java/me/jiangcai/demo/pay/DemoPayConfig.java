@@ -1,7 +1,15 @@
 package me.jiangcai.demo.pay;
 
+import me.jiangcai.demo.pay.bean.DebugPublicAccount;
+import me.jiangcai.wx.PublicAccountSupplier;
+import me.jiangcai.wx.classics.SinglePublicAccountSupplier;
+import me.jiangcai.wx.web.WeixinWebSpringConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.core.env.Environment;
 
 /**
  * 一个demo支付
@@ -12,5 +20,21 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ComponentScan("me.jiangcai.demo.pay.bean")
+@Import({WeixinWebSpringConfig.class})
 public class DemoPayConfig {
+    @Autowired
+    private Environment environment;
+
+    @Bean
+    public PublicAccountSupplier publicAccountSupplier() {
+        final DebugPublicAccount publicAccount = new DebugPublicAccount(environment.getProperty("account.url", "http://localhost/"));
+
+        final SinglePublicAccountSupplier singlePublicAccountSupplier = new SinglePublicAccountSupplier
+                (publicAccount);
+        publicAccount.setSupplier(singlePublicAccountSupplier);
+
+        singlePublicAccountSupplier.getTokens(publicAccount);
+
+        return singlePublicAccountSupplier;
+    }
 }

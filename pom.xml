@@ -55,6 +55,11 @@
             <version>5.1.32</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.luffy.libs</groupId>
+            <artifactId>libseext</artifactId>
+            <version>1.4</version>
+        </dependency>
     </dependencies>
 
     <repositories>
