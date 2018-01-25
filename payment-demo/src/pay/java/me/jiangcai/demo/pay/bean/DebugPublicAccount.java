@@ -18,8 +18,8 @@ public class DebugPublicAccount extends PublicAccount {
     public DebugPublicAccount(String url) {
         setAppID("wx59b0162cdf0967af");
         setAppSecret("ffcf655fce7c4175bbddae7b594c4e27");
-        setMchID("123");
-        setApiKey("456");
+        setMchID("11473623");
+        setApiKey("2ab9071b06b9f739b950ddb41db2690d");
         setInterfaceURL(url);
         setInterfaceToken("jiangcai");
     }

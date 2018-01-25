@@ -65,6 +65,9 @@ public class DemoController {
             additionalParameters.put(name, value);
             if ("channel".equals(name) && "wechatScan".equals(value))
                 additionalParameters.put("openId", UUID.randomUUID().toString());
+            if("tradeType".equals(name) && "JSAPI".equals(value)){
+                additionalParameters.put("openId", UUID.randomUUID().toString());
+            }
         }
     }
 
