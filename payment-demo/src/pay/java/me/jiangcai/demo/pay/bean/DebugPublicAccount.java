@@ -16,10 +16,10 @@ public class DebugPublicAccount extends PublicAccount {
     }
 
     public DebugPublicAccount(String url) {
-        setAppID("wx59b0162cdf0967af");
-        setAppSecret("ffcf655fce7c4175bbddae7b594c4e27");
-        setMchID("11473623");
-        setApiKey("2ab9071b06b9f739b950ddb41db2690d");
+        setAppID("wx198ba167229080c1");
+        setAppSecret("e3b05e7dc329c53dc781469ec1784792");
+        setMchID("1498570872");
+        setApiKey("1sapeoif78366vbcxbzjs8ew8182838d");
         setInterfaceURL(url);
         setInterfaceToken("jiangcai");
     }
