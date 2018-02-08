@@ -3,8 +3,8 @@ package me.jiangcai.demo.pay;
 import me.jiangcai.demo.pay.bean.DebugPublicAccount;
 import me.jiangcai.wx.PublicAccountSupplier;
 import me.jiangcai.wx.classics.SinglePublicAccountSupplier;
-import me.jiangcai.wx.model.WeixinPayUrl;
 import me.jiangcai.wx.pay.WeixinPayHookConfig;
+import me.jiangcai.wx.pay.model.WeixinPayUrl;
 import me.jiangcai.wx.web.WeixinWebSpringConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -43,8 +43,7 @@ public class DemoPayConfig {
     @Bean
     public WeixinPayUrl weixinPayUrl(){
         WeixinPayUrl weixinPayUrl = new WeixinPayUrl();
-        weixinPayUrl.setAbsUrl("http://localhost:8009/notify");
-        weixinPayUrl.setRelUrl("/notify");
+        weixinPayUrl.setAbsUrl("http://localhost:8009" + WeixinPayUrl.relUrl);
         return weixinPayUrl;
     }
 }

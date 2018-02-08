@@ -15,13 +15,13 @@
     <dependencies>
         <dependency>
             <groupId>me.jiangcai.wx</groupId>
-            <artifactId>weixin-service</artifactId>
-            <version>2.1.4</version>
+            <artifactId>weixin-pay</artifactId>
+            <version>${weixin.version}</version>
         </dependency>
         <dependency>
             <groupId>me.jiangcai.wx</groupId>
-            <artifactId>weixin-api</artifactId>
-            <version>2.1.4</version>
+            <artifactId>weixin-web</artifactId>
+            <version>${weixin.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

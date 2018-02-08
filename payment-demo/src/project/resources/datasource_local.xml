@@ -36,6 +36,7 @@
                 <value>me.jiangcai.payment.hua.huabei.entity</value>
                 <!--微信支付渠道-->
                 <value>me.jiangcai.wx.standard.entity</value>
+                <value>me.jiangcai.wx.pay.entity</value>
             </array>
         </property>
         <property name="persistenceProvider">

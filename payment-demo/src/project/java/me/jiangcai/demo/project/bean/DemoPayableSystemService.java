@@ -6,6 +6,7 @@ import me.jiangcai.payment.PayableOrder;
 import me.jiangcai.payment.entity.PayOrder;
 import me.jiangcai.payment.event.OrderPaySuccess;
 import me.jiangcai.payment.service.PayableSystemService;
+import me.jiangcai.wx.pay.entity.WeixinPayOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,9 @@ public class DemoPayableSystemService implements PayableSystemService {
 
     @Override
     public ModelAndView pay(HttpServletRequest request, PayableOrder order, PayOrder payOrder, Map<String, Object> additionalParameters) {
+        if(payOrder instanceof WeixinPayOrder){
+            return new ModelAndView("weixin-pay/pay.html");
+        }
         return new ModelAndView("pay.html");
     }
 

@@ -28,6 +28,7 @@
         <spring.version>4.3.3.RELEASE</spring.version>
         <log4j2.version>2.4.1</log4j2.version>
         <jiangcai.version>2.2</jiangcai.version>
+        <weixin.version>2.2.0-SNAPSHOT</weixin.version>
     </properties>
 
     <dependencyManagement>
