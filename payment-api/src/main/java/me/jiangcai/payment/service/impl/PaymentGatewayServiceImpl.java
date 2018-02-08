@@ -52,6 +52,20 @@ public class PaymentGatewayServiceImpl implements PaymentGatewayService {
     }
 
     @Override
+    public <T extends PayOrder> T getOrderByPayableOrderId(Class<T> type, String payableOrderId) {
+        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(type);
+        Root<T> root = criteriaQuery.from(type);
+        criteriaQuery = criteriaQuery.where(criteriaBuilder.equal(root.get("payableOrderId"), payableOrderId));
+        TypedQuery<T> query = entityManager.createQuery(criteriaQuery);
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException ignored) {
+            return null;
+        }
+    }
+
+    @Override
     public void makeEvent(PaymentEvent event) {
         synchronized (event.makeKey()) {
             applicationEventPublisher.publishEvent(event);
