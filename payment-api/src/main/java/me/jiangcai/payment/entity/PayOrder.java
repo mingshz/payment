@@ -42,6 +42,7 @@ public abstract class PayOrder {
     @Column(length = 36)
     private String payableOrderId;
     /**
+     * 商户订单号
      * 为了解决项目方订单号主键会重复的情况，特意加了这么个字段。
      * 应该把这个字段作为‘外部订单号’传给平台方
      */

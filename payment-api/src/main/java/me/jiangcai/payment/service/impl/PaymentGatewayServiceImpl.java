@@ -2,6 +2,7 @@ package me.jiangcai.payment.service.impl;
 
 import me.jiangcai.payment.PaymentForm;
 import me.jiangcai.payment.entity.PayOrder;
+import me.jiangcai.payment.entity.PayOrder_;
 import me.jiangcai.payment.event.OrderPayCancellation;
 import me.jiangcai.payment.event.OrderPaySuccess;
 import me.jiangcai.payment.event.PaymentEvent;
@@ -42,7 +43,7 @@ public class PaymentGatewayServiceImpl implements PaymentGatewayService {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(type);
         Root<T> root = criteriaQuery.from(type);
-        criteriaQuery = criteriaQuery.where(criteriaBuilder.equal(root.get("platformId"), platformId));
+        criteriaQuery = criteriaQuery.where(criteriaBuilder.equal(root.get(PayOrder_.platformId), platformId));
         TypedQuery<T> query = entityManager.createQuery(criteriaQuery);
         try {
             return query.getSingleResult();
@@ -52,11 +53,11 @@ public class PaymentGatewayServiceImpl implements PaymentGatewayService {
     }
 
     @Override
-    public <T extends PayOrder> T getOrderByPayableOrderId(Class<T> type, String payableOrderId) {
+    public <T extends PayOrder> T getOrderByMerchantOrderId(Class<T> type, String merchantOrderId) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(type);
         Root<T> root = criteriaQuery.from(type);
-        criteriaQuery = criteriaQuery.where(criteriaBuilder.equal(root.get("payableOrderId"), payableOrderId));
+        criteriaQuery = criteriaQuery.where(criteriaBuilder.equal(root.get(PayOrder_.merchantOrderId), merchantOrderId));
         TypedQuery<T> query = entityManager.createQuery(criteriaQuery);
         try {
             return query.getSingleResult();

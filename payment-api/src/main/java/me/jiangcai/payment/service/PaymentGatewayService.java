@@ -24,15 +24,15 @@ public interface PaymentGatewayService {
     <T extends PayOrder> T getOrder(Class<T> type, String platformId);
 
     /**
-     * 根据 项目方订单号 查找订单。如果有提供 platform 则优先使用{@link #getOrder(Class, String)}
+     * 根据 商户订单号 查找订单。如果有提供 platform 则优先使用{@link #getOrder(Class, String)}
      *
      * @param type           订单类型
-     * @param payableOrderId 项目方订单号
+     * @param merchantOrderId 商户
      * @param <T>            订单类型
      * @return null 或 特定支付订单
      */
     @Transactional(readOnly = true)
-    <T extends PayOrder> T getOrderByPayableOrderId(Class<T> type, String payableOrderId);
+    <T extends PayOrder> T getOrderByMerchantOrderId(Class<T> type, String merchantOrderId);
 
     /**
      * 内部方法！！切勿调用！！
