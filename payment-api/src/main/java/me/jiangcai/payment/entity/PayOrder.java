@@ -15,6 +15,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.From;
 import javax.persistence.criteria.Predicate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * 支付订单
@@ -40,6 +41,12 @@ public abstract class PayOrder {
      */
     @Column(length = 36)
     private String payableOrderId;
+    /**
+     * 为了解决项目方订单号主键会重复的情况，特意加了这么个字段。
+     * 应该把这个字段作为‘外部订单号’传给平台方
+     */
+    @Column(length = 36)
+    private String merchantOrderId = UUID.randomUUID().toString().replaceAll("-", "");
 
     /**
      * 最后变化时间
