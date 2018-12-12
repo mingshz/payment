@@ -15,6 +15,7 @@
         <module>payment-test</module>
         <module>support-paymax</module>
         <module>support-huabei-hua</module>
+        <module>support-premier</module>
     </modules>
 
     <properties>
