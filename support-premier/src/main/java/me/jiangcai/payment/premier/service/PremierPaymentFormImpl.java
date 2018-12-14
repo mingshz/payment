@@ -40,6 +40,7 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
         payOrder.setCustomerId(customerId);
         payOrder.setNotifyUrl(notifyUrl);
         payOrder.setBackUrl(backUrl);
+        payOrder.setPlatformId(order.getPayableOrderId().toString());
         int type = (int) additionalParameters.get("type");
         PayType payType = PayType.byCode(type);
         payOrder.setPayType(payType);
