@@ -26,6 +26,7 @@
                 <value>org.springframework.data.jpa.convert.threeten</value>
                 <!--本测试项目-->
                 <value>me.jiangcai.premier.project.entity</value>
+                <value>me.jiangcai.payment.premier.entity</value>
                 <!--测试支付渠道-->
                 <value>me.jiangcai.demo.pay.entity</value>
                 <value>me.jiangcai.demo.project.entity</value>

@@ -1,17 +1,15 @@
 package me.jiangcai.premier.test;
 
 import com.google.common.base.Predicate;
-import me.jiangcai.demo.project.entity.DemoTradeOrder;
-import me.jiangcai.demo.project.repository.DemoTradeOrderRepository;
 import me.jiangcai.lib.test.SpringWebTest;
 import me.jiangcai.payment.PaymentForm;
 import me.jiangcai.payment.service.PaymentService;
-import me.jiangcai.payment.test.page.IndexPage;
-import me.jiangcai.payment.test.page.PayPage;
 import me.jiangcai.premier.project.PremierDatasourceConfig;
 import me.jiangcai.premier.project.PremierProjectConfig;
 import me.jiangcai.premier.project.entity.PremierPayableOrder;
 import me.jiangcai.premier.project.repository.PremierPayableOrderRepository;
+import me.jiangcai.premier.test.page.IndexPage;
+import me.jiangcai.premier.test.page.PayPage;
 import org.apache.commons.lang.RandomStringUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;

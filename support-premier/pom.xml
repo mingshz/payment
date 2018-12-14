@@ -62,6 +62,11 @@
         </dependency>
         <dependency>
             <groupId>me.jiangcai.payment</groupId>
+            <artifactId>payment-test</artifactId>
+            <version>1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>me.jiangcai.payment</groupId>
             <artifactId>payment-demo</artifactId>
             <version>1.1-SNAPSHOT</version>
         </dependency>

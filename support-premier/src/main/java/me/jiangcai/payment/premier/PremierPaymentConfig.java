@@ -7,11 +7,11 @@ import org.springframework.context.annotation.Import;
 
 /**
  * 易支付配置
- * JPA需增配 me.jiangcai.payment.hua.huabei.entity
+ * JPA需增配 me.jiangcai.payment.premier.entity
  *
  * @author lxf
  */
-@ComponentScan({"me.jiangcai.payment.premier.service", "me.jiangcai.payment.service"})
+@ComponentScan({"me.jiangcai.payment.premier.service"})
 @Import({PaymentConfig.class})
 public class PremierPaymentConfig {
 }

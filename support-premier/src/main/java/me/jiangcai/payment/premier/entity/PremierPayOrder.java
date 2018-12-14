@@ -1,5 +1,6 @@
 package me.jiangcai.payment.premier.entity;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import me.jiangcai.payment.PaymentForm;
@@ -15,8 +16,7 @@ import java.math.BigDecimal;
  * @author lxf
  */
 @Entity
-@Setter
-@Getter
+@Data
 public class PremierPayOrder extends PayOrder {
 
     /**
