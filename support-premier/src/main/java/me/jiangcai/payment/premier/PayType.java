@@ -1,5 +1,8 @@
 package me.jiangcai.payment.premier;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * 支付类型
  *
@@ -34,8 +37,27 @@ public enum PayType {
      */
     private int code;
 
-    private PayType(String type, int Code) {
+    private static final LinkedList<PayType> payTypes = new LinkedList<>();
 
+    private PayType(String type, int Code) {
+    }
+
+    public static PayType byCode(int code) {
+        if (payTypes.isEmpty()) {
+            payTypes.add(PayType.AggAlipay);
+            payTypes.add(PayType.Alipay);
+            payTypes.add(PayType.AliPCWAPpay);
+            payTypes.add(PayType.AliWAPpay);
+            payTypes.add(PayType.jhAlipay);
+        }
+        for (PayType payType : payTypes) {
+            if (payType.code == code) {
+                return payType;
+            } else {
+                return null;
+            }
+        }
+        return null;
     }
 
 }

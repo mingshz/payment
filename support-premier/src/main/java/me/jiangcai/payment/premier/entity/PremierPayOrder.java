@@ -20,6 +20,12 @@ import java.math.BigDecimal;
 public class PremierPayOrder extends PayOrder {
 
     /**
+     * 商户号
+     */
+    @Column(length = 32)
+    private String customerId;
+
+    /**
      * 支付金额
      */
     @Column(scale = 2, precision = 12)
@@ -28,25 +34,25 @@ public class PremierPayOrder extends PayOrder {
     /**
      * 回调地址
      */
-    @Column(length = 100)
+    @Column(length = 256)
     private String notifyUrl;
 
     /**
      * 跳转url
      */
-    @Column(length = 100)
+    @Column(length = 256)
     private String backUrl;
 
     /**
      * 商品标题
      */
-    @Column(length = 20)
+    @Column(length = 128)
     private String mark;
 
     /**
      * 商品描述
      */
-    @Column(length = 50)
+    @Column(length = 128)
     private String remarks;
 
     /**
