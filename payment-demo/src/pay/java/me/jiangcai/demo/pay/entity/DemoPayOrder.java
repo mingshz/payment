@@ -1,5 +1,6 @@
 package me.jiangcai.demo.pay.entity;
 
+import me.jiangcai.demo.pay.DemoPaymentForm;
 import me.jiangcai.payment.PaymentForm;
 import me.jiangcai.payment.entity.PayOrder;
 
@@ -17,6 +18,6 @@ public class DemoPayOrder extends PayOrder {
 
     @Override
     public Class<? extends PaymentForm> getPaymentFormClass() {
-        return PaymentForm.class;
+        return DemoPaymentForm.class;
     }
 }
