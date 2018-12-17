@@ -12,6 +12,11 @@
 
     <artifactId>support-huabei-hua</artifactId>
 
+    <properties>
+        <maven.test.skip>true</maven.test.skip>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>javax</groupId>
