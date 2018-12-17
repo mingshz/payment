@@ -60,6 +60,12 @@ public class PremierPayOrder extends PayOrder {
      */
     private PayType payType;
 
+    /**
+     * @see com.paymax.model.Charge#status
+     */
+    @Column(length = 15)
+    private String orderStatus;
+
     @Override
     public Class<? extends PaymentForm> getPaymentFormClass() {
         return PremierPaymentForm.class;

@@ -1,6 +1,5 @@
 package me.jiangcai.payment.premier;
 
-import com.paymax.spring.PaymaxSpringConfig;
 import me.jiangcai.payment.PaymentConfig;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;

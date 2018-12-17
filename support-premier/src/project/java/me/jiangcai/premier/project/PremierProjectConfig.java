@@ -1,14 +1,18 @@
 package me.jiangcai.premier.project;
 
-import me.jiangcai.demo.project.DemoProjectConfig;
+import com.paymax.model.Charge;
+import com.paymax.spring.event.ChargeChangeEvent;
+import me.jiangcai.payment.MockPaymentEvent;
 import me.jiangcai.payment.PaymentConfig;
 import me.jiangcai.payment.premier.PremierPaymentConfig;
 import me.jiangcai.wx.standard.StandardWeixinConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -29,19 +33,34 @@ import java.io.IOException;
  * @author lxf
  */
 @Configuration
-@Import({DemoProjectConfig.class, PaymentConfig.class, PremierPaymentConfig.class, PremierProjectConfig.ThymeleafConfig.class, StandardWeixinConfig.class})
+@Import({PaymentConfig.class, PremierPaymentConfig.class, PremierProjectConfig.ThymeleafConfig.class, StandardWeixinConfig.class})
 @EnableWebMvc
-@ComponentScan({"me.jiangcai.demo.project.bean"})
+@ComponentScan({"me.jiangcai.premier.project.bean"})
 @EnableJpaRepositories("me.jiangcai.premier.project.repository")
 public class PremierProjectConfig extends WebMvcConfigurerAdapter {
 
     @Autowired
     private ThymeleafViewResolver thymeleafViewResolver;
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
         super.configureViewResolvers(registry);
         registry.viewResolver(thymeleafViewResolver);
+    }
+
+    @EventListener
+    public void event(MockPaymentEvent event) {
+        ChargeChangeEvent tradeEvent = new ChargeChangeEvent();
+        tradeEvent.setData(new Charge());
+        if (event.isSuccess()) {
+            tradeEvent.getData().setStatus("SUCCEED");
+        } else
+            tradeEvent.getData().setStatus("FAILED");
+
+        tradeEvent.getData().setId(event.getId());
+        applicationEventPublisher.publishEvent(tradeEvent);
     }
 
     @Import(ThymeleafConfig.ThymeleafTemplateConfig.class)

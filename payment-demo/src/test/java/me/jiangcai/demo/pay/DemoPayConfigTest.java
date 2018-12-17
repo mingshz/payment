@@ -13,7 +13,6 @@ public class DemoPayConfigTest extends PaymentTest {
     @Test
     public void go() throws Exception {
         testOrderFor("Demo");
-
     }
 
 }

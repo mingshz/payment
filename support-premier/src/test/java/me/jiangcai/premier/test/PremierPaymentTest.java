@@ -83,6 +83,7 @@ public abstract class PremierPaymentTest extends SpringWebTest {
     }
 
     protected PayPage makeOrderFor(String formName, boolean mockPay) {
+        waitSeconds = 15;
         driver.get("http://localhost/");
         IndexPage indexPage = initPage(IndexPage.class);
 

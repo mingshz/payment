@@ -3,11 +3,15 @@ package me.jiangcai.payment.premier.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.paymax.model.Charge;
+import com.paymax.spring.event.ChargeChangeEvent;
+import me.jiangcai.payment.MockPaymentEvent;
 import me.jiangcai.payment.premier.HttpsClientUtil;
 import me.jiangcai.payment.premier.PremierPaymentService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -71,11 +75,11 @@ public class PremierPaymentServiceImpl implements PremierPaymentService {
         String status = responseMap.getString("status");
         if ("1".equals(status)) {
             //通信成功
-           if("1".equals(responseMap.getString("state"))){
-               // 业务成功
-           }else {
-               // 业务失败
-           }
+            if ("1".equals(responseMap.getString("state"))) {
+                // 业务成功
+            } else {
+                // 业务失败
+            }
         } else {
             //通信失败
         }

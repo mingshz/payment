@@ -10,6 +10,10 @@ import javax.persistence.Id;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+/**
+ * 可支付的premier订单
+ * @author lxf
+ */
 @Entity
 @Data
 public class PremierPayableOrder implements PayableOrder {
