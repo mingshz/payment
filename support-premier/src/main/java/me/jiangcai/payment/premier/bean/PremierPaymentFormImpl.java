@@ -1,4 +1,4 @@
-package me.jiangcai.payment.premier.service;
+package me.jiangcai.payment.premier.bean;
 
 import com.paymax.spring.event.ChargeChangeEvent;
 import me.jiangcai.payment.PayableOrder;

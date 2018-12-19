@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Import;
  *
  * @author lxf
  */
-@ComponentScan({"me.jiangcai.payment.premier.service"})
+@ComponentScan({"me.jiangcai.payment.premier.bean"})
 @Import({PaymentConfig.class})
 public class PremierPaymentConfig {
 }

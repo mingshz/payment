@@ -1,17 +1,15 @@
-package me.jiangcai.payment.premier.service;
+package me.jiangcai.payment.premier.bean;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.paymax.model.Charge;
-import com.paymax.spring.event.ChargeChangeEvent;
-import me.jiangcai.payment.MockPaymentEvent;
 import me.jiangcai.payment.premier.HttpsClientUtil;
 import me.jiangcai.payment.premier.PremierPaymentService;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +24,8 @@ import java.util.Map;
 public class PremierPaymentServiceImpl implements PremierPaymentService {
 
     ObjectMapper objectMapper = new ObjectMapper();
+
+    private static final Log log = LogFactory.getLog(PremierPaymentServiceImpl.class);
 
     private final String sendUrl;
     private final String key;
@@ -75,12 +75,16 @@ public class PremierPaymentServiceImpl implements PremierPaymentService {
         String status = responseMap.getString("status");
         if ("1".equals(status)) {
             //通信成功
+            log.info("易支付,通信成功");
             if ("1".equals(responseMap.getString("state"))) {
                 // 业务成功
+                log.info("支付成功");
             } else {
                 // 业务失败
+                log.info("支付失败");
             }
         } else {
+            log.info("易支付,通信失败");
             //通信失败
         }
 
