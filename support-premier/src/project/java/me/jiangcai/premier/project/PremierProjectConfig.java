@@ -61,6 +61,9 @@ public class PremierProjectConfig extends WebMvcConfigurerAdapter {
 
         tradeEvent.getData().setId(event.getId());
         applicationEventPublisher.publishEvent(tradeEvent);
+
+        //这里应该是调用第三方的支付? 然而测试环境不参与回调
+
     }
 
     @Import(ThymeleafConfig.ThymeleafTemplateConfig.class)

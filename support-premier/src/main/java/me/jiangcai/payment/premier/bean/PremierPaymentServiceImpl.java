@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.jiangcai.payment.premier.HttpsClientUtil;
 import me.jiangcai.payment.premier.PremierPaymentService;
+import me.jiangcai.payment.premier.entity.PremierPayOrder;
+import me.jiangcai.payment.premier.exception.PlaceOrderException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,7 +44,7 @@ public class PremierPaymentServiceImpl implements PremierPaymentService {
     }
 
     @Override
-    public void pay(Map<String, Object> orderInfo) throws IOException {
+    public void payOrder(PremierPayOrder orderInfo) throws IOException {
         //首先是签名
         /**
          * 商户号	customerId	是	String(32)	由平台分配的商户号
@@ -54,20 +56,28 @@ public class PremierPaymentServiceImpl implements PremierPaymentService {
          后台异步回调地址	notifyUrl	是	String(256)	支付完成后结果通知url（post方法）
          前台同步回调地址	backUrl	是	String(256)	支付成功跳转路径；
          */
-        HashMap<String, Object> stringStringHashMap = new HashMap<>(orderInfo);
-
         StringBuilder sb = new StringBuilder();
-        String customerId = stringStringHashMap.get("customerId").toString();
+        String customerId = orderInfo.getCustomerId();
         sb.append("customerId=").append(customerId).append("&");
-        sb.append("mark").append(stringStringHashMap.get("mark")).append("&");
-        sb.append("remarks").append(stringStringHashMap.get("remarks")).append("&");
-        sb.append("orderNo").append(stringStringHashMap.get("orderNo")).append("&");
-        sb.append("orderMoney").append(stringStringHashMap.get("orderMoney")).append("&");
-        sb.append("notifyUrl").append(stringStringHashMap.get("notifyUrl")).append("&");
-        sb.append("backUrl").append(stringStringHashMap.get("backUrl")).append("&");
+        sb.append("mark").append(orderInfo.getMark()).append("&");
+        sb.append("remarks").append(orderInfo.getRemarks()).append("&");
+        sb.append("orderNo").append(orderInfo.getId()).append("&");
+        sb.append("orderMoney").append(orderInfo.getAmount()).append("&");
+        sb.append("notifyUrl").append(orderInfo.getNotifyUrl()).append("&");
+        sb.append("backUrl").append(orderInfo.getBackUrl()).append("&");
         String strMd5 = sb.toString() + key;
         String sign = DigestUtils.md5Hex(strMd5.getBytes("UTF-8")).toUpperCase();
+
+        HashMap<String, Object> stringStringHashMap = new HashMap<>();
+        stringStringHashMap.put("customerId", orderInfo.getCustomerId());
+        stringStringHashMap.put("mark", orderInfo.getMark());
+        stringStringHashMap.put("remarks", orderInfo.getRemarks());
+        stringStringHashMap.put("orderNo", orderInfo.getId());
+        stringStringHashMap.put("orderMoney", orderInfo.getAmount());
+        stringStringHashMap.put("notifyUrl", orderInfo.getNotifyUrl());
+        stringStringHashMap.put("backUrl", orderInfo.getBackUrl());
         stringStringHashMap.put("sign", sign);
+
 
         String s = objectMapper.writeValueAsString(stringStringHashMap);
         String responseStr = HttpsClientUtil.sendRequest(sendUrl, s);
@@ -76,18 +86,19 @@ public class PremierPaymentServiceImpl implements PremierPaymentService {
         if ("1".equals(status)) {
             //通信成功
             log.info("易支付,通信成功");
-            if ("1".equals(responseMap.getString("state"))) {
+            if ("1".equals(responseMap.getJSONObject("data").getString("state"))) {
                 // 业务成功
                 log.info("支付成功");
             } else {
                 // 业务失败
                 log.info("支付失败");
+                throw new PlaceOrderException("支付失败" + responseMap.getJSONObject("data").getString("msg"));
             }
         } else {
             log.info("易支付,通信失败");
+            throw new PlaceOrderException("支付失败" + responseMap.getString("msg"));
             //通信失败
         }
-
     }
 
     private CloseableHttpClient newClient() {

@@ -29,8 +29,6 @@ public class PremierPayableSystemService implements PayableSystemService {
     public void paySuccess(OrderPaySuccess event) {
         PremierPayableOrder demoTradeOrder = (PremierPayableOrder) event.getPayableOrder();
         demoTradeOrder.setDone(true);
-//        demoTradeOrderRepository.getOne(Long.parseLong(event.getPayableOrder().getPayableOrderId().toString()))
-//                .setDone(true);
     }
 
     @Override

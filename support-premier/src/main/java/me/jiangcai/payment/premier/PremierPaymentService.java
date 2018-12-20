@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.paymax.model.Charge;
 import com.paymax.spring.event.ChargeChangeEvent;
 import me.jiangcai.payment.MockPaymentEvent;
+import me.jiangcai.payment.premier.entity.PremierPayOrder;
 import org.springframework.context.event.EventListener;
 
 import java.io.IOException;
@@ -17,11 +18,12 @@ import java.util.Map;
  */
 public interface PremierPaymentService {
 
+
     /**
      * 支付订单
      *
-     * @param orderInfo 暂时用map代替请求的订单数据
+     * @param orderInfo 订单信息
      */
-    public void pay(Map<String, Object> orderInfo) throws IOException;
+    public void payOrder(PremierPayOrder orderInfo) throws IOException;
 
 }
