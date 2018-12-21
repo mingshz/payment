@@ -5,6 +5,9 @@ import com.paymax.spring.event.ChargeChangeEvent;
 import me.jiangcai.payment.MockPaymentEvent;
 import me.jiangcai.payment.PaymentConfig;
 import me.jiangcai.payment.premier.PremierPaymentConfig;
+import me.jiangcai.payment.premier.entity.PremierPayOrder;
+import me.jiangcai.payment.premier.event.CallBackOrderEvent;
+import me.jiangcai.payment.service.PaymentGatewayService;
 import me.jiangcai.wx.standard.StandardWeixinConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -40,6 +43,8 @@ import java.io.IOException;
 public class PremierProjectConfig extends WebMvcConfigurerAdapter {
 
     @Autowired
+    private PaymentGatewayService paymentGatewayService;
+    @Autowired
     private ThymeleafViewResolver thymeleafViewResolver;
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
@@ -61,9 +66,15 @@ public class PremierProjectConfig extends WebMvcConfigurerAdapter {
 
         tradeEvent.getData().setId(event.getId());
         applicationEventPublisher.publishEvent(tradeEvent);
+    }
 
-        //这里应该是调用第三方的支付? 然而测试环境不参与回调
-
+    @EventListener
+    public void callBackEvent(CallBackOrderEvent event) {
+        String platformId = event.getPlatformId();
+        PremierPayOrder order = paymentGatewayService.getOrder(PremierPayOrder.class, platformId);
+        if (event.isSuccess()) {
+            paymentGatewayService.paySuccess(order);
+        }
     }
 
     @Import(ThymeleafConfig.ThymeleafTemplateConfig.class)

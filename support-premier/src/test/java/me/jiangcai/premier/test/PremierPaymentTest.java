@@ -1,5 +1,6 @@
 package me.jiangcai.premier.test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Predicate;
 import me.jiangcai.lib.test.SpringWebTest;
 import me.jiangcai.payment.PaymentForm;
@@ -7,17 +8,26 @@ import me.jiangcai.payment.service.PaymentService;
 import me.jiangcai.premier.project.PremierDatasourceConfig;
 import me.jiangcai.premier.project.PremierProjectConfig;
 import me.jiangcai.premier.project.entity.PremierPayableOrder;
+import me.jiangcai.premier.project.even.MockNotifyEven;
 import me.jiangcai.premier.project.repository.PremierPayableOrderRepository;
 import me.jiangcai.premier.test.page.IndexPage;
 import me.jiangcai.premier.test.page.PayPage;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 /**
  * @author lxf
@@ -26,6 +36,7 @@ import java.math.BigDecimal;
 @WebAppConfiguration
 public abstract class PremierPaymentTest extends SpringWebTest {
 
+    private ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     private PaymentService paymentService;
     @Autowired
@@ -56,6 +67,21 @@ public abstract class PremierPaymentTest extends SpringWebTest {
         if (mockPay)
             payPage.makePay();
 
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("state", "2");
+        requestBody.put("customerId", "1");
+        requestBody.put("orderNum", "1");
+        //不够健全. 不能从页面获取id
+        requestBody.put("orderNo", "1");
+        requestBody.put("orderMoney", new BigDecimal("1.00"));
+        String md5str = "customerId=" + "1" + "&orderNum=" + "1" + "&orderNo=" + "1" + "&orderMoney=" + new BigDecimal("1.00") + "&state=" + "2" + "&key=" + "";
+        String sign1 = DigestUtils.md5Hex(md5str.getBytes("UTF-8")).toUpperCase();
+        requestBody.put("sign", sign1);
+        System.out.println(objectMapper.writeValueAsString(requestBody));
+        mockMvc.perform(post("/premier/call_back")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestBody)));
+
         assertPaySuccess();
 
         payPage = makeOrderFor(formName, mockPay);
@@ -67,6 +93,7 @@ public abstract class PremierPaymentTest extends SpringWebTest {
 
         assertPaySuccess();
     }
+
 
     protected void testOrderFor(Class<? extends PaymentForm> form) {
 

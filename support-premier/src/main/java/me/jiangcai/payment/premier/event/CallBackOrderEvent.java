@@ -12,8 +12,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class CallBackOrderEvent {
     /**
-     * 支付系统的订单号
+     * payOrderId
      */
-    private String id;
+    private String platformId;
     private boolean success;
 }

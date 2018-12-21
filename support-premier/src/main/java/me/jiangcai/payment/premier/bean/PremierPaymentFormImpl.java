@@ -8,7 +8,9 @@ import me.jiangcai.payment.premier.PayType;
 import me.jiangcai.payment.premier.PremierPaymentForm;
 import me.jiangcai.payment.premier.entity.PremierPayOrder;
 import me.jiangcai.payment.service.PaymentGatewayService;
+import me.jiangcai.premier.project.even.MockNotifyEven;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,8 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
     private String backUrl;
     @Autowired
     private PaymentGatewayService paymentGatewayService;
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
     public PremierPaymentFormImpl(Environment environment) {
@@ -74,7 +78,9 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
         order.setOrderStatus(event.getData().getStatus());
         if (!order.isCancel()) {
             if ("SUCCEED".equals(order.getOrderStatus())) {
-                paymentGatewayService.paySuccess(order);
+//                paymentGatewayService.paySuccess(order);
+                //这里改成异步回调去修改订单状态,改场景就发布一个新的事件模拟异步回调
+                applicationEventPublisher.publishEvent(new MockNotifyEven(order.getPlatformId()));
             } else if ("FAILED".equals(order.getOrderStatus())) {
                 paymentGatewayService.payCancel(order);
             }
