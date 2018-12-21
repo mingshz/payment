@@ -96,6 +96,7 @@ public class PaymentGatewayServiceImpl implements PaymentGatewayService {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<PayOrder> criteriaQuery = criteriaBuilder.createQuery(PayOrder.class);
         Root<PayOrder> root = criteriaQuery.from(PayOrder.class);
+
         criteriaQuery = criteriaQuery
                 .where(criteriaBuilder
                         .and(criteriaBuilder.equal(root.get("payableOrderId"), payableOrderId)

@@ -1,10 +1,10 @@
-package me.jiangcai.demo.project.bean;
+package me.jiangcai.premier.project.bean;
 
-import me.jiangcai.demo.project.entity.DemoTradeOrder;
-import me.jiangcai.demo.project.repository.DemoTradeOrderRepository;
 import me.jiangcai.payment.PaymentForm;
 import me.jiangcai.payment.exception.SystemMaintainException;
 import me.jiangcai.payment.service.PaymentService;
+import me.jiangcai.premier.project.entity.PremierPayableOrder;
+import me.jiangcai.premier.project.repository.PremierPayableOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
@@ -22,7 +22,7 @@ import java.util.UUID;
  * @author CJ
  */
 @Controller
-public class DemoController {
+public class PremierController {
 
     @Autowired
     private PaymentService paymentService;
@@ -31,7 +31,7 @@ public class DemoController {
     @Autowired
     private ApplicationContext applicationContext;
     @Autowired
-    private DemoTradeOrderRepository demoTradeOrderRepository;
+    private PremierPayableOrderRepository premierPayableOrderRepository;
 
     @RequestMapping(value = {"", "/"})
     public String index() {
@@ -41,10 +41,10 @@ public class DemoController {
     @RequestMapping(value = "/goOrder")
     public ModelAndView goOrder(HttpServletRequest request, BigDecimal amount, String name, String type)
             throws SystemMaintainException, ClassNotFoundException {
-        DemoTradeOrder order = new DemoTradeOrder();
+        PremierPayableOrder order = new PremierPayableOrder();
         order.setOrderDueAmount(amount);
         order.setOrderProductName(name);
-        order = demoTradeOrderRepository.saveAndFlush(order);
+        order = premierPayableOrderRepository.saveAndFlush(order);
 
         // 如果是拉卡拉支付的话，应该更加具体的选择 微信扫码 或者 网页网关
         Map<String, Object> additionalParameters = new HashMap<>();

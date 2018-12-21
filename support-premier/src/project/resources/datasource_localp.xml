@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--suppress SpringModelInspection -->
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean name="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource">
+            <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+                <property name="driverClassName" value="org.h2.Driver"/>
+                <property name="url" value="jdbc:h2:mem:payment;DB_CLOSE_DELAY=-1"/>
+            </bean>
+            <!--<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">-->
+            <!--<property name="driverClassName" value="com.mysql.jdbc.Driver"/>-->
+            <!--<property name="url" value="jdbc:mysql://localhost/payment"/>-->
+            <!--<property name="username" value="root"/>-->
+            <!--<property name="password" value=""/>-->
+            <!--</bean>-->
+        </property>
+        <property name="packagesToScan">
+            <array>
+                <!--核心-->
+                <value>me.jiangcai.payment.entity</value>
+                <value>org.springframework.data.jpa.convert.threeten</value>
+                <!--本测试项目-->
+                <value>me.jiangcai.premier.project.entity</value>
+                <value>me.jiangcai.payment.premier.entity</value>
+                <!--测试支付渠道-->
+                <value>me.jiangcai.demo.pay.entity</value>
+                <value>me.jiangcai.demo.project.entity</value>
+                <!--畅捷支付渠道-->
+                <value>me.jiangcai.payment.chanpay.entity</value>
+                <!--拉卡拉支付渠道-->
+                <value>me.jiangcai.payment.paymax.entity</value>
+                <!--华院花呗支付渠道-->
+                <value>me.jiangcai.payment.hua.huabei.entity</value>
+                <!--微信支付渠道-->
+                <value>me.jiangcai.wx.standard.entity</value>
+                <value>me.jiangcai.wx.pay.entity</value>
+            </array>
+        </property>
+        <property name="persistenceProvider">
+            <bean class="org.eclipse.persistence.jpa.PersistenceProvider"/>
+        </property>
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.EclipseLinkJpaDialect"/>
+        </property>
+
+        <property name="jpaPropertyMap">
+            <map>
+                <entry key="eclipselink.cache.shared.default" value="false"/>
+                <!--<entry key="eclipselink.session.customizer" value="me.jiangcai.dating.jpa.MysqlSessionCustomizer"/>-->
+                <entry key="javax.persistence.schema-generation.database.action" value="create"/>
+                <entry key="eclipselink.logging.level" value="OFF"/>
+                <!--<entry key="eclipselink.logging.logger"-->
+                <!--value="org.eclipse.persistence.logging.CommonsLoggingLog"/>-->
+                <entry key="eclipselink.weaving" value="false"/>
+            </map>
+        </property>
+    </bean>
+
+
+    <bean name="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+</beans>
