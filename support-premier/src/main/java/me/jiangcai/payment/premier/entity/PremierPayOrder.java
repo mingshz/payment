@@ -1,16 +1,12 @@
 package me.jiangcai.payment.premier.entity;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import me.jiangcai.payment.PaymentForm;
 import me.jiangcai.payment.entity.PayOrder;
-import me.jiangcai.payment.premier.PayType;
 import me.jiangcai.payment.premier.PremierPaymentForm;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import java.math.BigDecimal;
 
 /**
  * @author lxf
@@ -20,51 +16,10 @@ import java.math.BigDecimal;
 public class PremierPayOrder extends PayOrder {
 
     /**
-     * 商户号
+     * 支付宝支付链接
      */
-    @Column(length = 32)
-    private String customerId;
-
-    /**
-     * 支付金额
-     */
-    @Column(scale = 2, precision = 12)
-    private BigDecimal amount;
-
-    /**
-     * 回调地址
-     */
-    @Column(length = 256)
-    private String notifyUrl;
-
-    /**
-     * 跳转url
-     */
-    @Column(length = 256)
-    private String backUrl;
-
-    /**
-     * 商品标题
-     */
-    @Column(length = 128)
-    private String mark;
-
-    /**
-     * 商品描述
-     */
-    @Column(length = 128)
-    private String remarks;
-
-    /**
-     * 支付类型
-     */
-    private PayType payType;
-
-    /**
-     * @see com.paymax.model.Charge#status
-     */
-    @Column(length = 15)
-    private String orderStatus;
+    @Column(length = 100)
+    private String aliPayCodeUrl;
 
     @Override
     public Class<? extends PaymentForm> getPaymentFormClass() {
@@ -74,12 +29,7 @@ public class PremierPayOrder extends PayOrder {
     @Override
     public String toString() {
         return "PremierPayOrder{" +
-                "amount=" + amount +
-                ", notifyUrl='" + notifyUrl + '\'' +
-                ", backUrl='" + backUrl + '\'' +
-                ", mark='" + mark + '\'' +
-                ", remarks='" + remarks + '\'' +
-                ", payType=" + payType +
+                "aliPayCodeUrl='" + aliPayCodeUrl +
                 '}';
     }
 }

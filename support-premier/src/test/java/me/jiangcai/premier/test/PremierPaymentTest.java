@@ -8,7 +8,6 @@ import me.jiangcai.payment.service.PaymentService;
 import me.jiangcai.premier.project.PremierDatasourceConfig;
 import me.jiangcai.premier.project.PremierProjectConfig;
 import me.jiangcai.premier.project.entity.PremierPayableOrder;
-import me.jiangcai.premier.project.even.MockNotifyEven;
 import me.jiangcai.premier.project.repository.PremierPayableOrderRepository;
 import me.jiangcai.premier.test.page.IndexPage;
 import me.jiangcai.premier.test.page.PayPage;
@@ -17,11 +16,9 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -32,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 /**
  * @author lxf
  */
-@ContextConfiguration(classes = {PremierDatasourceConfig.class, PremierProjectConfig.class})
+@ContextConfiguration(classes = {PremierDatasourceConfig.class, PremierProjectConfig.class, PremierPayConfigTest.class})
 @WebAppConfiguration
 public abstract class PremierPaymentTest extends SpringWebTest {
 
