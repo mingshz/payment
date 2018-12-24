@@ -1,8 +1,6 @@
 package me.jiangcai.premier.project.bean;
 
 import me.jiangcai.payment.MockPaymentEvent;
-import me.jiangcai.payment.premier.PremierPaymentService;
-import me.jiangcai.payment.premier.entity.PremierPayOrder;
 import me.jiangcai.payment.service.PaymentGatewayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -18,8 +16,6 @@ public class PremierPayController {
 
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
-    @Autowired
-    private PremierPaymentService premierPaymentService;
     @Autowired
     private PaymentGatewayService paymentGatewayService;
 

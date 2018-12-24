@@ -1,18 +1,13 @@
 package me.jiangcai.premier.test;
 
-import me.jiangcai.premier.project.PremierProjectConfig;
-import org.junit.Test;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author lxf
  */
-@ContextConfiguration(classes = PremierProjectConfig.class)
-public class PremierPayConfigTest extends PremierPaymentTest {
 
-    @Test
-    public void go() throws Exception {
-        testOrderFor("易支付");
-    }
-
+@Configuration
+@ComponentScan("me.jiangcai.premier.test.bean")
+public class PremierPayConfigTest {
 }
