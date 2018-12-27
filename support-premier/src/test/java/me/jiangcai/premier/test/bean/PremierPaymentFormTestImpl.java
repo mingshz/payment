@@ -7,7 +7,6 @@ import me.jiangcai.payment.exception.SystemMaintainException;
 import me.jiangcai.payment.premier.PremierPaymentForm;
 import me.jiangcai.payment.premier.entity.PremierPayOrder;
 import me.jiangcai.payment.service.PaymentGatewayService;
-import me.jiangcai.premier.project.even.MockNotifyEven;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Primary;
@@ -58,7 +57,7 @@ public class PremierPaymentFormTestImpl implements PremierPaymentForm {
         order.setEventTime(LocalDateTime.now());
         if (!order.isCancel()) {
             if ("SUCCEED".equals(event.getData().getStatus())) {
-                applicationEventPublisher.publishEvent(new MockNotifyEven(order.getPlatformId()));
+                paymentGatewayService.paySuccess(order);
             } else if ("FAILED".equals(event.getData().getStatus())) {
                 paymentGatewayService.payCancel(order);
             }

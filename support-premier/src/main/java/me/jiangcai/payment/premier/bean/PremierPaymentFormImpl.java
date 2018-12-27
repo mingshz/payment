@@ -12,7 +12,6 @@ import me.jiangcai.payment.premier.PremierPaymentForm;
 import me.jiangcai.payment.premier.entity.PremierPayOrder;
 import me.jiangcai.payment.premier.exception.PlaceOrderException;
 import me.jiangcai.payment.service.PaymentGatewayService;
-import me.jiangcai.premier.project.even.MockNotifyEven;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,6 +21,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,16 +56,24 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
     @Override
     public PayOrder newPayOrder(HttpServletRequest request, PayableOrder order, Map<String, Object> additionalParameters) throws SystemMaintainException {
         StringBuilder sb = new StringBuilder();
-        String type = additionalParameters.get("type").toString();
+        String customerId = "1535535402498";
+        String backUrl = "www.baidu.com";
+        String notifyUrl = "www.baidu.com";
+        String mark = "测试订单";
+        String remarks = "测试订单详情";
+        BigDecimal orderMoney = new BigDecimal("0.01");
+        String orderNo = "1";
+        String type = "88";
+        String key = "7692ecf5b63949337473755b062f2434";
 
         sb.append("backUrl").append(backUrl).append("&");
         sb.append("customerId=").append(customerId).append("&");
-        sb.append("mark=").append(order.getOrderProductName()).append("&");
+        sb.append("mark=").append(mark).append("&");
         sb.append("notifyUrl=").append(notifyUrl).append("&");
-        sb.append("orderNo=").append(order.getPayableOrderId()).append("&");
-        sb.append("orderMoney=").append(order.getOrderDueAmount()).append("&");
-        sb.append("remarks=").append(order.getOrderBody()).append("&");
+        sb.append("orderMoney=").append(orderMoney).append("&");
+        sb.append("orderNo=").append(orderNo).append("&");
         sb.append("payType=").append(type).append("$");
+        sb.append("remarks=").append(remarks).append("&");
         String strMd5 = sb.toString() + key;
         String sign;
         try {
@@ -73,22 +81,11 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
         } catch (Throwable ex) {
             throw new SystemMaintainException(ex);
         }
-        HashMap<String, Object> stringStringHashMap = new HashMap<>();
-        stringStringHashMap.put("customerId", customerId);
-        stringStringHashMap.put("mark", order.getOrderProductName());
-        stringStringHashMap.put("remarks", order.getOrderBody());
-        stringStringHashMap.put("orderNo", order.getPayableOrderId());
-        stringStringHashMap.put("orderMoney", order.getOrderDueAmount());
-        stringStringHashMap.put("notifyUrl", notifyUrl);
-        stringStringHashMap.put("backUrl", backUrl);
-        stringStringHashMap.put("payType", type);
-        stringStringHashMap.put("sign", sign);
 
-
+        String requestUrl = "https://api.aisaepay.com/companypay/easyPay/recharge" + "?customerId=" + customerId + "&orderNo=" + orderNo + "&orderMoney=" + orderMoney + "&payType=" + type + "&notifyUrl=" + notifyUrl + "&backUrl=" + backUrl + "&sign=" + sign + "&mark=" + mark + "&remarks=" + remarks;
         JSONObject responseMap;
         try {
-            String s = objectMapper.writeValueAsString(stringStringHashMap);
-            String responseStr = HttpsClientUtil.sendRequest(sendUrl, s);
+            String responseStr = HttpsClientUtil.sendRequest(requestUrl, null);
             responseMap = JSON.parseObject(responseStr);
             String status = responseMap.getString("status");
             if ("1".equals(status)) {
@@ -141,7 +138,7 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
         order.setEventTime(LocalDateTime.now());
         if (!order.isCancel()) {
             if ("SUCCEED".equals(event.getData().getStatus())) {
-                applicationEventPublisher.publishEvent(new MockNotifyEven(order.getPlatformId()));
+                paymentGatewayService.paySuccess(order);
             } else if ("FAILED".equals(event.getData().getStatus())) {
                 paymentGatewayService.payCancel(order);
             }

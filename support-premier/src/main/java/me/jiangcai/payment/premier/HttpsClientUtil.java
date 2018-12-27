@@ -78,22 +78,16 @@ public class HttpsClientUtil {
         String strResult = "";
         HttpResponse resp = null;
         HttpClient httpClient = createAuthNonHttpClient();//new DefaultHttpClient();
-//        wrapClient(httpClient);
         try {
-           /* HttpParams httpParams = httpClient.getParams();
-            httpParams.setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, timeout);
-            httpParams.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, timeout);*/
             HttpPost httpPost = new HttpPost(url);
-            httpPost.setHeader("Content-Type", "application/json;charset=UTF-8");
-            HttpEntity postEntity = new StringEntity(json, "utf-8");
-            httpPost.setEntity(postEntity);
+            httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+            if (json != null) {
+                HttpEntity postEntity = new StringEntity(json, "utf-8");
+                httpPost.setEntity(postEntity);
+            }
             resp = httpClient.execute(httpPost);
             HttpEntity entity = resp.getEntity();
             strResult = EntityUtils.toString(entity);
-//            System.out.println("请求地址: " + httpPost.getURI());
-//            System.out.println("响应状态: " + resp.getStatusLine());
-//            System.out.println("响应长度: " + strResult.length());
-//            System.out.println("响应内容: " + strResult);
 
         } finally {
             HttpClientUtils.closeQuietly(resp);

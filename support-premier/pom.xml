@@ -64,7 +64,7 @@
 
     <build>
         <sourceDirectory>
-            src/project/java
+            src/main/java
         </sourceDirectory>
         <resources>
             <resource>
@@ -76,7 +76,7 @@
                 <directory>src/test/resources</directory>
             </testResource>
             <testResource>
-                <directory>../payment-demo/src/project/resources</directory>
+                <directory>../support-premier/src/project/resources</directory>
             </testResource>
         </testResources>
         <plugins>
