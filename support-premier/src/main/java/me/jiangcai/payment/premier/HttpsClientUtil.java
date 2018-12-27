@@ -82,6 +82,7 @@ public class HttpsClientUtil {
             HttpPost httpPost = new HttpPost(url);
             httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
             if (json != null) {
+                httpPost.setHeader("Content-Type", "application/json;charset=UTF-8");
                 HttpEntity postEntity = new StringEntity(json, "utf-8");
                 httpPost.setEntity(postEntity);
             }

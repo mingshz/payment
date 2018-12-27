@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -63,7 +62,7 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
         String remarks = "测试订单详情";
         BigDecimal orderMoney = new BigDecimal("0.01");
         String orderNo = "1";
-        String type = "88";
+        String type = additionalParameters.get("type").toString();
         String key = "7692ecf5b63949337473755b062f2434";
 
         sb.append("backUrl").append(backUrl).append("&");
