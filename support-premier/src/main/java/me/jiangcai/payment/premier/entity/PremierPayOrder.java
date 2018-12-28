@@ -21,6 +21,11 @@ public class PremierPayOrder extends PayOrder {
     @Column(length = 100)
     private String aliPayCodeUrl;
 
+    /**
+     * 同意支付,但是未支付的一个状态. true 处于等待状态, false 已经完成了支付操作,或者取消操作
+     */
+    private boolean waitPay = true;
+
     @Override
     public Class<? extends PaymentForm> getPaymentFormClass() {
         return PremierPaymentForm.class;

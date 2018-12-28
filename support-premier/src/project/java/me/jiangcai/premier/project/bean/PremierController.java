@@ -68,8 +68,8 @@ public class PremierController {
             if ("tradeType".equals(name) && "JSAPI".equals(value)) {
                 additionalParameters.put("openId", UUID.randomUUID().toString());
             }
-            if ("channel".equals(name) && "primier".equals(value)) {
-                additionalParameters.put("type", 88);
+            if ("channel".equals(name) && "premier".equals(value)) {
+                additionalParameters.put("type", 9);
             }
         }
     }

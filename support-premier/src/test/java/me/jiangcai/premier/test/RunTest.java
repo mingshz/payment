@@ -32,26 +32,29 @@ public class RunTest extends PremierPaymentTest {
         String remarks = "测试订单详情";
         BigDecimal orderMoney = new BigDecimal("0.01");
         String orderNo = "1";
-        String type = "10";
+        String payType = "9";
         String key = "7692ecf5b63949337473755b062f2434";
 
-        sb.append("backUrl").append(backUrl).append("&");
+        sb.append("backUrl=").append(backUrl).append("&");
         sb.append("customerId=").append(customerId).append("&");
         sb.append("mark=").append(mark).append("&");
         sb.append("notifyUrl=").append(notifyUrl).append("&");
         sb.append("orderMoney=").append(orderMoney).append("&");
         sb.append("orderNo=").append(orderNo).append("&");
-        sb.append("payType=").append(type).append("$");
+        sb.append("payType=").append(payType).append("$");
         sb.append("remarks=").append(remarks).append("&");
-        String strMd5 = sb.toString() + key;
+
+        String Md5str = "customerId=" + customerId + "&orderNo=" + orderNo + "&orderMoney=" + orderMoney + "&payType=" + payType + "&notifyUrl=" + notifyUrl + "&backUrl=" + backUrl + key;
+//        String strMd5 = sb.toString() + "key=" + key;
+        System.out.println(Md5str);
         String sign;
         try {
-            sign = DigestUtils.md5Hex(strMd5.getBytes("UTF-8")).toUpperCase();
+            sign = DigestUtils.md5Hex(Md5str.getBytes("UTF-8")).toUpperCase();
         } catch (Throwable ex) {
             throw new SystemMaintainException(ex);
         }
 
-        String requestUrl = "https://api.aisaepay.com/companypay/easyPay/recharge" + "?customerId=" + customerId + "&orderNo=" + orderNo + "&orderMoney=" + orderMoney + "&payType=" + type + "&notifyUrl=" + notifyUrl + "&backUrl=" + backUrl + "&sign=" + sign + "&mark=" + mark + "&remarks=" + remarks;
+        String requestUrl = "https://api.aisaepay.com/companypay/easyPay/recharge" + "?customerId=" + customerId + "&orderNo=" + orderNo + "&orderMoney=" + orderMoney + "&payType=" + payType + "&notifyUrl=" + notifyUrl + "&backUrl=" + backUrl + "&sign=" + sign + "&mark=" + mark + "&remarks=" + remarks;
         JSONObject responseMap;
         try {
             String responseStr = HttpsClientUtil.sendRequest(requestUrl, null);
@@ -73,6 +76,7 @@ public class RunTest extends PremierPaymentTest {
             }
         } catch (Throwable ex) {
             throw new SystemMaintainException(ex);
+
         }
     }
 }
