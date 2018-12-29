@@ -10,6 +10,7 @@ import me.jiangcai.payment.exception.SystemMaintainException;
 import me.jiangcai.payment.premier.HttpsClientUtil;
 import me.jiangcai.payment.premier.PremierPaymentForm;
 import me.jiangcai.payment.premier.entity.PremierPayOrder;
+import me.jiangcai.payment.premier.event.CallBackOrderEvent;
 import me.jiangcai.payment.premier.exception.PlaceOrderException;
 import me.jiangcai.payment.service.PaymentGatewayService;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -17,6 +18,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
@@ -151,11 +153,25 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
         order.setEventTime(LocalDateTime.now());
         //这里订单不应该是一个完成状态,而应该是一个同意支付,但是带支付的状态.
         if (success) {
-
+            return new ModelAndView("redirect:" + payUrl);
         } else {
             order.setWaitPay(false);
             paymentGatewayService.payCancel(order);
+            return new ModelAndView("payCancel.html");
         }
-        return new ModelAndView(payUrl);
+    }
+
+    @EventListener
+    public void callBackEvent(CallBackOrderEvent event) {
+        String platformId = event.getPlatformId();
+        PremierPayOrder order = paymentGatewayService.getOrder(PremierPayOrder.class, platformId);
+        if (event.isSuccess()) {
+            //不再处于等待状态
+            order.setWaitPay(false);
+            paymentGatewayService.paySuccess(order);
+        } else {
+            //失败也是取消
+            paymentGatewayService.payCancel(order);
+        }
     }
 }

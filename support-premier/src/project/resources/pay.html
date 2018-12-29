@@ -69,19 +69,15 @@
                 $.ajax($('body').attr('data-pay-url'), {
                     method: 'put',
                     contentType: 'application/json',
-                    data: {
-                        "success": success,
-                        "payUrl": 'https://api.aisaepay.com/companypay/pay.html?url=https://qr.alipay.com/fkx01947lwu0xmmlto0i4de'
-                    }
+                    data: '{"success": ' + success + ',"payUrl": "' + [[${payOrder.getAliPayCodeUrl()}]] + '"}'
                 });
             } else {
                 $.ajax($('body').attr('data-pay-url'), {
-                    method: 'put',
-                    contentType: 'application/json',
-                    data: {
-                        "success": success,
+                        method: 'put',
+                        contentType: 'application/json',
+                        data: '{"success": ' + success + ',}'
                     }
-                });
+                );
             }
 
         }
@@ -92,7 +88,8 @@
         $('#noPay').click(function () {
             pay(false);
         });
-    });
+    })
+    ;
 </script>
 </body>
 </html>

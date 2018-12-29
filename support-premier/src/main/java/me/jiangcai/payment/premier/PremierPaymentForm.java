@@ -2,6 +2,7 @@ package me.jiangcai.payment.premier;
 
 import com.paymax.spring.event.ChargeChangeEvent;
 import me.jiangcai.payment.PaymentForm;
+import me.jiangcai.payment.premier.event.CallBackOrderEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,4 +26,13 @@ public interface PremierPaymentForm extends PaymentForm {
      */
     @Transactional
     ModelAndView payOrCancel(HttpServletRequest request, String id, boolean success, String payUrl);
+
+
+    /**
+     * 回调事件处理
+     *
+     * @param event 事件
+     */
+    @EventListener
+    public void callBackEvent(CallBackOrderEvent event);
 }
