@@ -68,15 +68,6 @@ public class PremierProjectConfig extends WebMvcConfigurerAdapter {
         applicationEventPublisher.publishEvent(tradeEvent);
     }
 
-    @EventListener
-    public void callBackEvent(CallBackOrderEvent event) {
-        String platformId = event.getPlatformId();
-        PremierPayOrder order = paymentGatewayService.getOrder(PremierPayOrder.class, platformId);
-        if (event.isSuccess()) {
-            paymentGatewayService.paySuccess(order);
-        }
-    }
-
     @Import(ThymeleafConfig.ThymeleafTemplateConfig.class)
     static class ThymeleafConfig {
         @Autowired

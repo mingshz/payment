@@ -6,12 +6,15 @@ import me.jiangcai.payment.entity.PayOrder;
 import me.jiangcai.payment.exception.SystemMaintainException;
 import me.jiangcai.payment.premier.PremierPaymentForm;
 import me.jiangcai.payment.premier.entity.PremierPayOrder;
+import me.jiangcai.payment.premier.event.CallBackOrderEvent;
+import me.jiangcai.payment.premier.exception.PlaceOrderException;
 import me.jiangcai.payment.service.PaymentGatewayService;
-import me.jiangcai.premier.project.even.MockNotifyEven;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -58,10 +61,39 @@ public class PremierPaymentFormTestImpl implements PremierPaymentForm {
         order.setEventTime(LocalDateTime.now());
         if (!order.isCancel()) {
             if ("SUCCEED".equals(event.getData().getStatus())) {
-                applicationEventPublisher.publishEvent(new MockNotifyEven(order.getPlatformId()));
+                paymentGatewayService.paySuccess(order);
             } else if ("FAILED".equals(event.getData().getStatus())) {
                 paymentGatewayService.payCancel(order);
             }
+        }
+    }
+
+    @Override
+    public ModelAndView payOrCancel(HttpServletRequest request, String id, boolean success, String payUrl) {
+        PremierPayOrder order = paymentGatewayService.getOrder(PremierPayOrder.class, id);
+        if (order == null) {
+            throw new PlaceOrderException("订单不存在");
+        }
+        order.setEventTime(LocalDateTime.now());
+        //这里订单不应该是一个完成状态,而应该是一个同意支付,但是带支付的状态.
+        if (success) {
+            return new ModelAndView("redirect:" + payUrl);
+        } else {
+            order.setWaitPay(false);
+            paymentGatewayService.payCancel(order);
+            return new ModelAndView("payCancel.html");
+        }
+    }
+
+    public void callBackEvent(CallBackOrderEvent event) {
+        String platformId = event.getPlatformId();
+        PremierPayOrder order = paymentGatewayService.getOrder(PremierPayOrder.class, platformId);
+        if (event.isSuccess()) {
+            //不再处于等待状态
+            order.setWaitPay(false);
+            paymentGatewayService.paySuccess(order);
+        } else {
+            paymentGatewayService.payCancel(order);
         }
     }
 }

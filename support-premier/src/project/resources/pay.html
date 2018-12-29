@@ -2,7 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
     <title>支付中……</title>
 </head>
 <!--/*@thymesVar id="payOrder" type="me.jiangcai.payment.entity.PayOrder"*/-->
@@ -34,7 +35,7 @@
 <button id="noPay">拒绝支付</button>
 
 <script src="//cdn.lmjia.cn/jquery/3.2.1/jquery.min.js"></script>
-<script>
+<script th:inline="javascript">
     $(function () {
         // 一直检查 check
 
@@ -63,11 +64,22 @@
         setTimeout('$._loginCheck()', 2000);
 
         function pay(success) {
-            $.ajax($('body').attr('data-pay-url'), {
-                method: 'put',
-                contentType: 'application/json',
-                data: JSON.stringify(success)
-            });
+            if (success) {
+//                self.location = 'https://api.aisaepay.com/companypay/pay.html?url=https://qr.alipay.com/fkx01947lwu0xmmlto0i4de';
+                $.ajax($('body').attr('data-pay-url'), {
+                    method: 'put',
+                    contentType: 'application/json',
+                    data: '{"success": ' + success + ',"payUrl": "' + [[${payOrder.getAliPayCodeUrl()}]] + '"}'
+                });
+            } else {
+                $.ajax($('body').attr('data-pay-url'), {
+                        method: 'put',
+                        contentType: 'application/json',
+                        data: '{"success": ' + success + ',}'
+                    }
+                );
+            }
+
         }
 
         $('#pay').click(function () {
@@ -76,7 +88,8 @@
         $('#noPay').click(function () {
             pay(false);
         });
-    });
+    })
+    ;
 </script>
 </body>
 </html>

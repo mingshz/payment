@@ -61,7 +61,7 @@ public class PremierCallBackController {
         String sign2 = DigestUtils.md5Hex(md5str.getBytes("UTF-8")).toUpperCase();
         if (!sign.equals(sign2)) {
             //签名错误
-            log.info("交易失败");
+            log.info("签名错误");
             return;
         }
         if ("2".equals(state)) {

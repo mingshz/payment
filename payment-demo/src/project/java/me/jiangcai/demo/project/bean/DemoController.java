@@ -68,7 +68,7 @@ public class DemoController {
             if ("tradeType".equals(name) && "JSAPI".equals(value)) {
                 additionalParameters.put("openId", UUID.randomUUID().toString());
             }
-            if ("channel".equals(name) && "primier".equals(value)) {
+            if ("channel".equals(name) && "premier".equals(value)) {
                 additionalParameters.put("type", 88);
             }
         }
