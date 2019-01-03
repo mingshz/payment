@@ -21,14 +21,9 @@ import java.util.Map;
 public class PremierPayController {
 
     @Autowired
-    private ApplicationEventPublisher applicationEventPublisher;
-    @Autowired
-    private PaymentGatewayService paymentGatewayService;
-    @Autowired
     private PremierPaymentForm premierPaymentForm;
 
     @RequestMapping(method = RequestMethod.PUT, value = "/pay/{id}")
-
     public ModelAndView pay(HttpServletRequest request, @PathVariable String id, @RequestBody Map<String, Object> requestBody) {
         //首先判断该订单是支付还是取消
         boolean success = (boolean) requestBody.get("success");

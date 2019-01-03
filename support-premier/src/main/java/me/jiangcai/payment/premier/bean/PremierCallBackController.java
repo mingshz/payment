@@ -34,11 +34,12 @@ public class PremierCallBackController {
 
     @Autowired
     public PremierCallBackController(Environment environment) {
-        this.key = environment.getProperty("premier.mKey", "");
+        this.key = environment.getProperty("premier.mKey", "7692ecf5b63949337473755b062f2434");
     }
 
-    @RequestMapping(value = "/premier/call_back", method = RequestMethod.POST)
+
     @ResponseBody
+    @RequestMapping(value = "/premier/call_back", method = RequestMethod.POST)
     public void callBack(@RequestBody String requestBody) throws UnsupportedEncodingException {
         //解析返回串
         JSONObject requestMap = JSON.parseObject(requestBody);

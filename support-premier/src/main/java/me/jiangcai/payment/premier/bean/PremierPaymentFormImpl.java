@@ -33,8 +33,8 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
     private static final Log log = LogFactory.getLog(PremierPaymentFormImpl.class);
 
     private String customerId;
-    private String notifyUrl;
-    private String backUrl;
+    private String notifyUrlPro;
+    private String backUrlIp;
     @Autowired
     private PaymentGatewayService paymentGatewayService;
     @Autowired
@@ -48,8 +48,8 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
     @Autowired
     public PremierPaymentFormImpl(Environment environment) {
         customerId = environment.getProperty("premier.customerId", "1535535402498");
-        notifyUrl = environment.getProperty("premier.notifyUrl", "");
-        backUrl = environment.getProperty("premier.backUrl", "");
+        notifyUrlPro = environment.getProperty("premier.notifyUrl", "");
+        backUrlIp = environment.getProperty("premier.backUrl", "");
 
         this.sendUrl = environment.getProperty("premier.transferUrl", "https://api.aisaepay.com/companypay/easyPay/recharge");
         this.key = environment.getProperty("premier.mKey", "7692ecf5b63949337473755b062f2434");
@@ -58,8 +58,8 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
     @Override
     public PayOrder newPayOrder(HttpServletRequest request, PayableOrder order, Map<String, Object> additionalParameters) throws SystemMaintainException {
         StringBuilder sb = new StringBuilder();
-        String backUrl = "www.baidu.com";
-        String notifyUrl = "www.baidu.com";
+        String backUrl = backUrlIp + "/premier/call_back";
+        String notifyUrl = notifyUrlPro;
         String mark = "测试订单";
         String remarks = "测试订单详情";
         BigDecimal orderMoney = new BigDecimal("0.01");

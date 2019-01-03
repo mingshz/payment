@@ -71,7 +71,7 @@ public abstract class PremierPaymentTest extends SpringWebTest {
         //不够健全. 不能从页面获取id
         requestBody.put("orderNo", "1");
         requestBody.put("orderMoney", new BigDecimal("1.00"));
-        String md5str = "customerId=" + "1" + "&orderNum=" + "1" + "&orderNo=" + "1" + "&orderMoney=" + new BigDecimal("1.00") + "&state=" + "2" + "&key=" + "";
+        String md5str = "customerId=" + "1" + "&orderNum=" + "1" + "&orderNo=" + "1" + "&orderMoney=" + new BigDecimal("1.00") + "&state=" + "2" + "&key=" + "7692ecf5b63949337473755b062f2434";
         String sign1 = DigestUtils.md5Hex(md5str.getBytes("UTF-8")).toUpperCase();
         requestBody.put("sign", sign1);
         System.out.println(objectMapper.writeValueAsString(requestBody));

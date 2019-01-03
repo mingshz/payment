@@ -34,5 +34,5 @@ public interface PremierPaymentForm extends PaymentForm {
      * @param event 事件
      */
     @EventListener
-    public void callBackEvent(CallBackOrderEvent event);
+    void callBackEvent(CallBackOrderEvent event);
 }
