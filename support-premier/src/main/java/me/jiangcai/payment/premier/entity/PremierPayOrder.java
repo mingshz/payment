@@ -3,6 +3,8 @@ package me.jiangcai.payment.premier.entity;
 import lombok.Data;
 import me.jiangcai.payment.PaymentForm;
 import me.jiangcai.payment.entity.PayOrder;
+import me.jiangcai.payment.premier.PayType;
+import me.jiangcai.payment.premier.PremierOrderStatus;
 import me.jiangcai.payment.premier.PremierPaymentForm;
 
 import javax.persistence.Column;
@@ -22,11 +24,17 @@ public class PremierPayOrder extends PayOrder {
     private String aliPayCodeUrl;
 
     /**
-     * 同意支付,但是未支付的一个状态. true 处于等待状态, false 已经完成了支付操作,或者取消操作
+     * 易支付选择的支付方式
      */
-    private boolean waitPay = true;
+    private PayType premierType;
+
+    /**
+     * 订单的状态
+     */
+    private PremierOrderStatus status = PremierOrderStatus.wait;
 
     @Override
+
     public Class<? extends PaymentForm> getPaymentFormClass() {
         return PremierPaymentForm.class;
     }

@@ -1,5 +1,7 @@
 package me.jiangcai.payment.premier;
 
+import lombok.Getter;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,6 +10,7 @@ import java.util.List;
  *
  * @author lxf
  */
+@Getter
 public enum PayType {
 
     /**
@@ -17,15 +20,17 @@ public enum PayType {
      * aggAlipay	支付宝转账H5	8
      * jhAlipay	支付宝原生H5	10
      */
-    Alipay("支付宝企业app支付", 2),
+    Alipay("支付宝支付", 0),
 
-    AliWAPpay("支付宝手机Wap支付", 88),
+    WechatPay("微信支付", 1),
 
-    AliPCWAPpay("支付宝电脑网站支付", 66),
+//    AliPCWAPpay("支付宝电脑网站支付", 2),
 
-    AggAlipay("支付宝转账H5", 8),
+//    AggAlipay("支付宝转账H5", 3),
+//
+//    jhAlipay("支付宝原生H5", 4),
 
-    jhAlipay("支付宝原生H5", 10);
+    URLpay("返回URL自行支付", 3);
 
     /**
      * 类型
@@ -37,27 +42,9 @@ public enum PayType {
      */
     private int code;
 
-    private static final LinkedList<PayType> payTypes = new LinkedList<>();
-
-    private PayType(String type, int Code) {
-    }
-
-    public static PayType byCode(int code) {
-        if (payTypes.isEmpty()) {
-            payTypes.add(PayType.AggAlipay);
-            payTypes.add(PayType.Alipay);
-            payTypes.add(PayType.AliPCWAPpay);
-            payTypes.add(PayType.AliWAPpay);
-            payTypes.add(PayType.jhAlipay);
-        }
-        for (PayType payType : payTypes) {
-            if (payType.code == code) {
-                return payType;
-            } else {
-                return null;
-            }
-        }
-        return null;
+    private PayType(String type, int code) {
+        this.type = type;
+        this.code = code;
     }
 
 }
