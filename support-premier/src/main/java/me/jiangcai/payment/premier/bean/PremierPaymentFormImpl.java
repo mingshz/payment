@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class PremierPaymentFormImpl implements PremierPaymentForm {
@@ -57,13 +58,15 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
 
     @Override
     public PayOrder newPayOrder(HttpServletRequest request, PayableOrder order, Map<String, Object> additionalParameters) throws SystemMaintainException {
+        //随机生成一个平台id
+        String platformId = UUID.randomUUID().toString().replace("-", "");
         StringBuilder sb = new StringBuilder();
         String backUrl = backUrlIp + "/premier/call_back";
         String notifyUrl = notifyUrlPro;
-        String mark = "测试订单";
-        String remarks = "测试订单详情";
+        String mark = order.getOrderProductName();
+        String remarks = order.getOrderProductModel();
         BigDecimal orderMoney = new BigDecimal("0.01");
-        String orderNo = "1";
+        String orderNo = platformId;
         String payType = additionalParameters.get("type").toString();
 
         sb.append("backUrl").append(backUrl).append("&");
@@ -109,7 +112,7 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
         PremierPayOrder payOrder = new PremierPayOrder();
         payOrder.setAliPayCodeUrl(responseMap.getString("url"));
         payOrder.setPayableOrderId(order.getPayableOrderId().toString());
-        payOrder.setPlatformId(order.getPayableOrderId().toString());
+        payOrder.setPlatformId(platformId);
         return payOrder;
     }
 
