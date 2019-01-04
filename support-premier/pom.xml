@@ -24,11 +24,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.swwx.paymax</groupId>
-            <artifactId>paymax-server-sdk-java</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>me.jiangcai.lib</groupId>
             <artifactId>spring</artifactId>
             <version>${jiangcai.version}</version>

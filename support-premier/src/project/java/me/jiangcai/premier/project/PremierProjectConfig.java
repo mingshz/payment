@@ -1,11 +1,8 @@
 package me.jiangcai.premier.project;
 
-import com.paymax.model.Charge;
-import com.paymax.spring.event.ChargeChangeEvent;
 import me.jiangcai.payment.MockPaymentEvent;
 import me.jiangcai.payment.PaymentConfig;
 import me.jiangcai.payment.premier.PremierPaymentConfig;
-import me.jiangcai.payment.premier.entity.PremierPayOrder;
 import me.jiangcai.payment.premier.event.CallBackOrderEvent;
 import me.jiangcai.payment.service.PaymentGatewayService;
 import me.jiangcai.wx.standard.StandardWeixinConfig;
@@ -57,15 +54,10 @@ public class PremierProjectConfig extends WebMvcConfigurerAdapter {
 
     @EventListener
     public void event(MockPaymentEvent event) {
-        ChargeChangeEvent tradeEvent = new ChargeChangeEvent();
-        tradeEvent.setData(new Charge());
-        if (event.isSuccess()) {
-            tradeEvent.getData().setStatus("SUCCEED");
-        } else
-            tradeEvent.getData().setStatus("FAILED");
-
-        tradeEvent.getData().setId(event.getId());
-        applicationEventPublisher.publishEvent(tradeEvent);
+        applicationEventPublisher.publishEvent(new CallBackOrderEvent(
+                event.getId(),
+                event.isSuccess()
+        ));
     }
 
     @Import(ThymeleafConfig.ThymeleafTemplateConfig.class)
