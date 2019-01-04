@@ -8,8 +8,6 @@ import me.jiangcai.payment.PayableOrder;
 import me.jiangcai.payment.entity.PayOrder;
 import me.jiangcai.payment.exception.SystemMaintainException;
 import me.jiangcai.payment.premier.HttpsClientUtil;
-import me.jiangcai.payment.premier.PayType;
-import me.jiangcai.payment.premier.PremierOrderStatus;
 import me.jiangcai.payment.premier.PremierPaymentForm;
 import me.jiangcai.payment.premier.entity.PremierPayOrder;
 import me.jiangcai.payment.premier.event.CallBackOrderEvent;
@@ -23,7 +21,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -115,7 +112,6 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
         payOrder.setAliPayCodeUrl(responseMap.getString("url"));
         payOrder.setPayableOrderId(order.getPayableOrderId().toString());
         payOrder.setPlatformId(platformId);
-        payOrder.setPremierType(PayType.URLpay);
         return payOrder;
     }
 
@@ -156,11 +152,9 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
         PremierPayOrder order = paymentGatewayService.getOrder(PremierPayOrder.class, platformId);
         if (event.isSuccess()) {
             //不再处于等待状态
-            order.setStatus(PremierOrderStatus.success);
             paymentGatewayService.paySuccess(order);
         } else {
             //失败也是取消
-            order.setStatus(PremierOrderStatus.failer);
             paymentGatewayService.payCancel(order);
         }
     }
