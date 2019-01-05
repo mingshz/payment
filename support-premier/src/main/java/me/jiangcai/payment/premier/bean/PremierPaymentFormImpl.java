@@ -25,14 +25,15 @@ import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class PremierPaymentFormImpl implements PremierPaymentForm {
     private static final Log log = LogFactory.getLog(PremierPaymentFormImpl.class);
 
     private String customerId;
-    private String notifyUrl;
-    private String backUrl;
+    private String notifyUrlPro;
+    private String backUrlIp;
     @Autowired
     private PaymentGatewayService paymentGatewayService;
     @Autowired
@@ -46,8 +47,8 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
     @Autowired
     public PremierPaymentFormImpl(Environment environment) {
         customerId = environment.getProperty("premier.customerId", "1535535402498");
-        notifyUrl = environment.getProperty("premier.notifyUrl", "");
-        backUrl = environment.getProperty("premier.backUrl", "");
+        notifyUrlPro = environment.getProperty("premier.notifyUrl", "");
+        backUrlIp = environment.getProperty("premier.backUrl", "");
 
         this.sendUrl = environment.getProperty("premier.transferUrl", "https://api.aisaepay.com/companypay/easyPay/recharge");
         this.key = environment.getProperty("premier.mKey", "7692ecf5b63949337473755b062f2434");
@@ -55,13 +56,14 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
 
     @Override
     public PayOrder newPayOrder(HttpServletRequest request, PayableOrder order, Map<String, Object> additionalParameters) throws SystemMaintainException {
+        //随机生成一个平台id
+        String platformId = UUID.randomUUID().toString().replace("-", "");
         StringBuilder sb = new StringBuilder();
-        String backUrl = "www.baidu.com";
-        String notifyUrl = "www.baidu.com";
-        String mark = "测试订单";
-        String remarks = "测试订单详情";
+        String backUrl = backUrlIp + "/premier/call_back";
+        String notifyUrl = notifyUrlPro;
+        String mark = order.getOrderProductName();
+        String remarks = order.getOrderProductModel();
         BigDecimal orderMoney = new BigDecimal("0.01");
-        String orderNo = "1";
         String payType = additionalParameters.get("type").toString();
 
         sb.append("backUrl").append(backUrl).append("&");
@@ -69,17 +71,17 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
         sb.append("mark=").append(mark).append("&");
         sb.append("notifyUrl=").append(notifyUrl).append("&");
         sb.append("orderMoney=").append(orderMoney).append("&");
-        sb.append("orderNo=").append(orderNo).append("&");
+        sb.append("orderNo=").append(platformId).append("&");
         sb.append("payType=").append(payType).append("$");
         sb.append("remarks=").append(remarks).append("&");
-        String Md5str = "customerId=" + customerId + "&orderNo=" + orderNo + "&orderMoney=" + orderMoney + "&payType=" + payType + "&notifyUrl=" + notifyUrl + "&backUrl=" + backUrl + key;
+        String Md5str = "customerId=" + customerId + "&orderNo=" + platformId + "&orderMoney=" + orderMoney + "&payType=" + payType + "&notifyUrl=" + notifyUrl + "&backUrl=" + backUrl + key;
         String sign;
         try {
             sign = DigestUtils.md5Hex(Md5str.getBytes("UTF-8")).toUpperCase();
         } catch (Throwable ex) {
             throw new SystemMaintainException(ex);
         }
-        String requestUrl = sendUrl + "?customerId=" + customerId + "&orderNo=" + orderNo + "&orderMoney=" + orderMoney + "&payType=" + payType + "&notifyUrl=" + notifyUrl + "&backUrl=" + backUrl + "&sign=" + sign + "&mark=" + mark + "&remarks=" + remarks;
+        String requestUrl = sendUrl + "?customerId=" + customerId + "&orderNo=" + platformId + "&orderMoney=" + orderMoney + "&payType=" + payType + "&notifyUrl=" + notifyUrl + "&backUrl=" + backUrl + "&sign=" + sign + "&mark=" + mark + "&remarks=" + remarks;
 
         try {
             String responseStr = HttpsClientUtil.sendRequest(requestUrl, null);
@@ -94,7 +96,7 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
                     PremierPayOrder payOrder = new PremierPayOrder();
                     payOrder.setAliPayCodeUrl(root.get("url").asText());
                     payOrder.setPayableOrderId(order.getPayableOrderId().toString());
-                    payOrder.setPlatformId(order.getPayableOrderId().toString());
+                    payOrder.setPlatformId(platformId);
                     return payOrder;
                 } else {
                     // 业务失败
@@ -127,22 +129,6 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
         System.out.println("不支持订单状态查询");
     }
 
-    @Override
-    public ModelAndView payOrCancel(HttpServletRequest request, String id, boolean success, String payUrl) {
-        PremierPayOrder order = paymentGatewayService.getOrder(PremierPayOrder.class, id);
-        if (order == null) {
-            throw new PlaceOrderException("订单不存在");
-        }
-        order.setEventTime(LocalDateTime.now());
-        //这里订单不应该是一个完成状态,而应该是一个同意支付,但是带支付的状态.
-        if (success) {
-            return new ModelAndView("redirect:" + payUrl);
-        } else {
-            order.setWaitPay(false);
-            paymentGatewayService.payCancel(order);
-            return new ModelAndView("payCancel.html");
-        }
-    }
 
     @EventListener
     public void callBackEvent(CallBackOrderEvent event) {
@@ -150,7 +136,6 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
         PremierPayOrder order = paymentGatewayService.getOrder(PremierPayOrder.class, platformId);
         if (event.isSuccess()) {
             //不再处于等待状态
-            order.setWaitPay(false);
             paymentGatewayService.paySuccess(order);
         } else {
             //失败也是取消
