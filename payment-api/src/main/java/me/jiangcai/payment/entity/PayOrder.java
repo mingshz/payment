@@ -52,19 +52,19 @@ public abstract class PayOrder {
     /**
      * 最后变化时间
      */
-    @Column(columnDefinition = "timestamp")
-    private LocalDateTime eventTime;
+    @Column(columnDefinition = "timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime eventTime = LocalDateTime.now();
 
     /**
      * 完成时间
      */
-    @Column(columnDefinition = "timestamp")
+    @Column(columnDefinition = "datetime")
     private LocalDateTime finishTime;
 
     /**
      * 开始支付时间
      */
-    @Column(columnDefinition = "timestamp")
+    @Column(columnDefinition = "datetime")
     private LocalDateTime startTime;
 
     /**
