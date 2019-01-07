@@ -19,11 +19,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
@@ -32,8 +30,8 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
     private static final Log log = LogFactory.getLog(PremierPaymentFormImpl.class);
 
     private String customerId;
-    private String notifyUrlPro;
-    private String backUrlIp;
+    private String notifyUrlPrefix;
+    private String backUrlPro;
     @Autowired
     private PaymentGatewayService paymentGatewayService;
     @Autowired
@@ -47,8 +45,8 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
     @Autowired
     public PremierPaymentFormImpl(Environment environment) {
         customerId = environment.getProperty("premier.customerId", "1535535402498");
-        notifyUrlPro = environment.getProperty("premier.notifyUrl", "");
-        backUrlIp = environment.getProperty("premier.backUrl", "");
+        notifyUrlPrefix = environment.getProperty("premier.notifyUrl", "");
+        backUrlPro = environment.getProperty("premier.backUrl", "");
 
         this.sendUrl = environment.getProperty("premier.transferUrl", "https://api.aisaepay.com/companypay/easyPay/recharge");
         this.key = environment.getProperty("premier.mKey", "7692ecf5b63949337473755b062f2434");
@@ -59,8 +57,8 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
         //随机生成一个平台id
         String platformId = UUID.randomUUID().toString().replace("-", "");
         StringBuilder sb = new StringBuilder();
-        String backUrl = backUrlIp + "/premier/call_back";
-        String notifyUrl = notifyUrlPro;
+        String backUrl = backUrlPro;
+        String notifyUrl = notifyUrlPrefix + "/premier/call_back";
         String mark = order.getOrderProductName();
         String remarks = order.getOrderProductModel();
         BigDecimal orderMoney = new BigDecimal("0.01");
