@@ -92,7 +92,7 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
                     // 业务成功
                     log.debug("业务成功");
                     PremierPayOrder payOrder = new PremierPayOrder();
-                    payOrder.setAliPayCodeUrl(root.get("url").asText());
+                    payOrder.setAliPayCodeUrl(data.get("url").asText());
                     payOrder.setPayableOrderId(order.getPayableOrderId().toString());
                     payOrder.setPlatformId(platformId);
                     return payOrder;
