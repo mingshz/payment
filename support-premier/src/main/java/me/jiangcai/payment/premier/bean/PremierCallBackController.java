@@ -40,7 +40,7 @@ public class PremierCallBackController {
 
     @RequestMapping(value = "/premier/call_back", method = RequestMethod.POST)
     @ResponseBody
-    public void callBack(@RequestBody String requestBody) throws IOException {
+    public String callBack(@RequestBody String requestBody) throws IOException {
         //解析返回串
         JsonNode root = objectMapper.readTree(requestBody);
 
@@ -63,21 +63,21 @@ public class PremierCallBackController {
         if (!sign.equals(sign2)) {
             //签名错误
             log.info("签名错误");
-            return;
+            return "failure";
         }
         if ("2".equals(state)) {
             //交易成功
             //发布成功事件
             applicationEventPublisher.publishEvent(new CallBackOrderEvent(orderNo, true));
-            System.out.println("success");
+            return "success";
         } else if ("1".equals(state)) {
             //交易失败
             //发布失败事件
             applicationEventPublisher.publishEvent(new CallBackOrderEvent(orderNo, false));
-            System.out.println("success");
+            return "success";
         } else {
             //意外的状态
-            System.out.println("failure");
+            return "failure";
         }
     }
 }
