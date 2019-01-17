@@ -61,7 +61,7 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
         String notifyUrl = notifyUrlPrefix + "/premier/call_back";
         String mark = order.getOrderProductName();
         String remarks = order.getOrderProductModel();
-        BigDecimal orderMoney = new BigDecimal("0.01");
+        BigDecimal orderMoney = order.getOrderDueAmount();
         String payType = additionalParameters.get("type").toString();
 
         sb.append("backUrl").append(backUrl).append("&");
