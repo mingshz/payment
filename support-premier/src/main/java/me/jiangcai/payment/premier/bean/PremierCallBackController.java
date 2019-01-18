@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -40,9 +41,10 @@ public class PremierCallBackController {
 
     @RequestMapping(value = "/premier/call_back", method = RequestMethod.POST)
     @ResponseBody
-    public String callBack(@RequestBody String requestBody) throws IOException {
+    public String callBack(HttpServletRequest request, @RequestBody String requestBody) throws IOException {
         //解析返回串
         JsonNode root = objectMapper.readTree(requestBody);
+        request.getParameterMap();
 
 //        /**
 //         * state           // 1:充值失败 2:充值成功
