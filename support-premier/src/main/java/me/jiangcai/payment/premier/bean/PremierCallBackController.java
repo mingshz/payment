@@ -41,11 +41,14 @@ public class PremierCallBackController {
 
     @RequestMapping(value = "/premier/call_back", method = RequestMethod.POST)
     @ResponseBody
-    public String callBack(HttpServletRequest request, @RequestBody String requestBody) throws IOException {
+    public String callBack(HttpServletRequest request) throws IOException {
         //解析返回串
-        JsonNode root = objectMapper.readTree(requestBody);
-        request.getParameterMap();
-
+        String state = request.getParameter("state");
+        String customerId = request.getParameter("customerId");
+        String orderNum = request.getParameter("orderNum");
+        String orderNo = request.getParameter("orderNo");
+        String orderMoney = request.getParameter("orderMoney");
+        String sign = request.getParameter("sign");
 //        /**
 //         * state           // 1:充值失败 2:充值成功
 //         customerId  //商户注册的时候，分配的商户ID
@@ -54,12 +57,6 @@ public class PremierCallBackController {
 //         orderMoney  //商户订单实际金额单位：（元）
 //         sign    //网关系统签名字符串
 //         */
-        String state = root.get("state").asText();
-        String customerId = root.get("customerId").asText();
-        String orderNum = root.get("orderNum").asText();
-        String orderNo = root.get("orderNo").asText();
-        BigDecimal orderMoney = new BigDecimal(root.get("orderMoney").asText());
-        String sign = root.get("sign").asText();
         String md5str = "customerId=" + customerId + "&orderNum=" + orderNum + "&orderNo=" + orderNo + "&orderMoney=" + orderMoney + "&state=" + state + "&key=" + key;
         String sign2 = DigestUtils.md5Hex(md5str.getBytes("UTF-8")).toUpperCase();
         if (!sign.equals(sign2)) {
