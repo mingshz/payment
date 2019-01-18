@@ -18,7 +18,7 @@ public class PremierPayOrder extends PayOrder {
     /**
      * 支付宝支付链接
      */
-    @Column(length = 200)
+    @Column(columnDefinition = "text")
     private String aliPayCodeUrl;
 
     @Override

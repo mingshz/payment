@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -40,9 +41,10 @@ public class PremierCallBackController {
 
     @RequestMapping(value = "/premier/call_back", method = RequestMethod.POST)
     @ResponseBody
-    public void callBack(@RequestBody String requestBody) throws IOException {
+    public String callBack(HttpServletRequest request, @RequestBody String requestBody) throws IOException {
         //解析返回串
         JsonNode root = objectMapper.readTree(requestBody);
+        request.getParameterMap();
 
 //        /**
 //         * state           // 1:充值失败 2:充值成功
@@ -63,21 +65,21 @@ public class PremierCallBackController {
         if (!sign.equals(sign2)) {
             //签名错误
             log.info("签名错误");
-            return;
+            return "failure";
         }
         if ("2".equals(state)) {
             //交易成功
             //发布成功事件
             applicationEventPublisher.publishEvent(new CallBackOrderEvent(orderNo, true));
-            System.out.println("success");
+            return "success";
         } else if ("1".equals(state)) {
             //交易失败
             //发布失败事件
             applicationEventPublisher.publishEvent(new CallBackOrderEvent(orderNo, false));
-            System.out.println("success");
+            return "success";
         } else {
             //意外的状态
-            System.out.println("failure");
+            return "failure";
         }
     }
 }
