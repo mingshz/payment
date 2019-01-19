@@ -70,22 +70,22 @@
             <url>http://repo1.maven.org/maven2/</url>
         </repository>
         <repository>
-            <id>repo-jc</id>
+            <id>mingshz-nexus</id>
             <name>JiangCai Repository</name>
-            <url>http://repo.jiangcai.me:8082/content/groups/public/</url>
+            <url>http://repo.mingshz.com/content/groups/public/</url>
         </repository>
     </repositories>
 
     <distributionManagement>
         <repository>
-            <id>jc-nexus</id>
+            <id>mingshz-nexus</id>
             <name>Nexus Release Repository</name>
-            <url>http://repo.jiangcai.me:8082/content/repositories/releases/</url>
+            <url>http://repo.mingshz.com/content/repositories/releases/</url>
         </repository>
         <snapshotRepository>
-            <id>jc-nexus</id>
+            <id>mingshz-nexus</id>
             <name>Nexus Snapshot Repository</name>
-            <url>http://repo.jiangcai.me:8082/content/repositories/snapshots/</url>
+            <url>http://repo.mingshz.com/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
