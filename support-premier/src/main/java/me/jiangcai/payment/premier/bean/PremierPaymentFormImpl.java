@@ -8,15 +8,11 @@ import me.jiangcai.payment.exception.SystemMaintainException;
 import me.jiangcai.payment.premier.HttpsClientUtil;
 import me.jiangcai.payment.premier.PremierPaymentForm;
 import me.jiangcai.payment.premier.entity.PremierPayOrder;
-import me.jiangcai.payment.premier.event.CallBackOrderEvent;
 import me.jiangcai.payment.premier.exception.PlaceOrderException;
-import me.jiangcai.payment.service.PaymentGatewayService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -32,10 +28,6 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
     private String customerId;
     private String notifyUrlPrefix;
     private String backUrlPro;
-    @Autowired
-    private PaymentGatewayService paymentGatewayService;
-    @Autowired
-    private ApplicationEventPublisher applicationEventPublisher;
     ObjectMapper objectMapper = new ObjectMapper();
 
 
@@ -132,16 +124,4 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
     }
 
 
-    @EventListener
-    public void callBackEvent(CallBackOrderEvent event) {
-        String platformId = event.getPlatformId();
-        PremierPayOrder order = paymentGatewayService.getOrder(PremierPayOrder.class, platformId);
-        if (event.isSuccess()) {
-            //不再处于等待状态
-            paymentGatewayService.paySuccess(order);
-        } else {
-            //失败也是取消
-            paymentGatewayService.payCancel(order);
-        }
-    }
 }

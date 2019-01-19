@@ -1,22 +1,20 @@
 package me.jiangcai.payment.premier.bean;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.apachecommons.CommonsLog;
-import me.jiangcai.payment.premier.event.CallBackOrderEvent;
+import me.jiangcai.payment.premier.entity.PremierPayOrder;
+import me.jiangcai.payment.service.PaymentGatewayService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.math.BigDecimal;
 
 /**
  * 用于接受回调函数的对外接口
@@ -30,6 +28,8 @@ public class PremierCallBackController {
 
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
+    @Autowired
+    private PaymentGatewayService paymentGatewayService;
 
     private final String key;
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -64,15 +64,16 @@ public class PremierCallBackController {
             log.info("签名错误");
             return "failure";
         }
+        PremierPayOrder order = paymentGatewayService.getOrder(PremierPayOrder.class, orderNo);
         if ("2".equals(state)) {
             //交易成功
             //发布成功事件
-            applicationEventPublisher.publishEvent(new CallBackOrderEvent(orderNo, true));
+            paymentGatewayService.paySuccess(order);
             return "success";
         } else if ("1".equals(state)) {
             //交易失败
             //发布失败事件
-            applicationEventPublisher.publishEvent(new CallBackOrderEvent(orderNo, false));
+            paymentGatewayService.payCancel(order);
             return "success";
         } else {
             //意外的状态
