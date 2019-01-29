@@ -64,7 +64,8 @@ public class PremierCallBackController {
             log.info("签名错误");
             return "failure";
         }
-        PremierPayOrder order = paymentGatewayService.getOrder(PremierPayOrder.class, orderNo);
+        PremierPayOrder order = paymentGatewayService.getOrderByMerchantOrderId(PremierPayOrder.class, orderNo);
+        order.setPlatformId(orderNum);
         if ("2".equals(state)) {
             //交易成功
             //发布成功事件

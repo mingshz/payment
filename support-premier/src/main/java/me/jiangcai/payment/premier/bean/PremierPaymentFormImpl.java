@@ -46,8 +46,8 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
 
     @Override
     public PayOrder newPayOrder(HttpServletRequest request, PayableOrder order, Map<String, Object> additionalParameters) throws SystemMaintainException {
-        //随机生成一个平台id
-        String platformId = UUID.randomUUID().toString().replace("-", "");
+        PremierPayOrder payOrder = new PremierPayOrder();
+        String merchantOrderId = payOrder.getMerchantOrderId();
         StringBuilder sb = new StringBuilder();
         String backUrl = backUrlPro;
         String notifyUrl = notifyUrlPrefix + "/premier/call_back";
@@ -61,21 +61,22 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
         sb.append("mark=").append(mark).append("&");
         sb.append("notifyUrl=").append(notifyUrl).append("&");
         sb.append("orderMoney=").append(orderMoney).append("&");
-        sb.append("orderNo=").append(platformId).append("&");
+        sb.append("orderNo=").append(merchantOrderId).append("&");
         sb.append("payType=").append(payType).append("$");
         sb.append("remarks=").append(remarks).append("&");
-        String Md5str = "customerId=" + customerId + "&orderNo=" + platformId + "&orderMoney=" + orderMoney + "&payType=" + payType + "&notifyUrl=" + notifyUrl + "&backUrl=" + backUrl + key;
+        String Md5str = "customerId=" + customerId + "&orderNo=" + merchantOrderId + "&orderMoney=" + orderMoney + "&payType=" + payType + "&notifyUrl=" + notifyUrl + "&backUrl=" + backUrl + key;
         String sign;
         try {
             sign = DigestUtils.md5Hex(Md5str.getBytes("UTF-8")).toUpperCase();
         } catch (Throwable ex) {
             throw new SystemMaintainException(ex);
         }
-        String requestUrl = sendUrl + "?customerId=" + customerId + "&orderNo=" + platformId + "&orderMoney=" + orderMoney + "&payType=" + payType + "&notifyUrl=" + notifyUrl + "&backUrl=" + backUrl + "&sign=" + sign + "&mark=" + mark + "&remarks=" + remarks;
+        String requestUrl = sendUrl + "?customerId=" + customerId + "&orderNo=" + merchantOrderId + "&orderMoney=" + orderMoney + "&payType=" + payType + "&notifyUrl=" + notifyUrl + "&backUrl=" + backUrl + "&sign=" + sign + "&mark=" + mark + "&remarks=" + remarks;
 
         try {
             String responseStr = HttpsClientUtil.sendRequest(requestUrl, null);
             JsonNode root = objectMapper.readTree(responseStr);
+            System.out.println(root);
             JsonNode data = root.get("data");
             if ("1".equals(root.get("status").asText())) {
                 //通信成功
@@ -83,14 +84,14 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
                 if ("1".equals(data.get("state").asText())) {
                     // 业务成功
                     log.debug("业务成功");
-                    PremierPayOrder payOrder = new PremierPayOrder();
                     if ("9".equals(payType)) {
                         payOrder.setAliPayCodeUrl(root.get("url").asText());
-                    } else if ("13".equals(payType)) {
+                    } else if ("13".equals(payType) || "16".equals(payType)) {
+                        payOrder.setAliPayCodeUrl(data.get("url").asText());
+                    } else {
                         payOrder.setAliPayCodeUrl(data.get("url").asText());
                     }
                     payOrder.setPayableOrderId(order.getPayableOrderId().toString());
-                    payOrder.setPlatformId(platformId);
                     return payOrder;
                 } else {
                     // 业务失败
