@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 public class PremierPaymentFormImpl implements PremierPaymentForm {
@@ -28,7 +27,7 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
     private String customerId;
     private String notifyUrlPrefix;
     private String backUrlPro;
-    ObjectMapper objectMapper = new ObjectMapper();
+    private ObjectMapper objectMapper = new ObjectMapper();
 
 
     private final String sendUrl;
@@ -76,7 +75,6 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
         try {
             String responseStr = HttpsClientUtil.sendRequest(requestUrl, null);
             JsonNode root = objectMapper.readTree(responseStr);
-            System.out.println(root);
             JsonNode data = root.get("data");
             if ("1".equals(root.get("status").asText())) {
                 //通信成功
