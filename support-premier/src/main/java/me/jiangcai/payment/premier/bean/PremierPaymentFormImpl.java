@@ -94,11 +94,13 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
                 } else {
                     // 业务失败
                     log.warn("业务失败");
-                    throw new PlaceOrderException("业务失败" + data.get("msg").asText());
+                    // 记录全部 requestUrl
+                    throw new PlaceOrderException(data.get("msg").asText(), requestUrl, payType);
                 }
             } else {
                 log.warn("易支付,通信失败");
-                throw new PlaceOrderException("通信失败" + root.get("msg").asText());
+                //
+                throw new PlaceOrderException(root.get("msg").asText(), requestUrl, payType);
                 //通信失败
             }
         } catch (Throwable ex) {
