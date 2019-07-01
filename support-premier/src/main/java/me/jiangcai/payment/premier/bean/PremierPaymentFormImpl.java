@@ -2,6 +2,7 @@ package me.jiangcai.payment.premier.bean;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.jiangcai.lib.ee.ServletUtils;
 import me.jiangcai.payment.PayableOrder;
 import me.jiangcai.payment.entity.PayOrder;
 import me.jiangcai.payment.exception.SystemMaintainException;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @Service
@@ -47,7 +49,7 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
     public PayOrder newPayOrder(HttpServletRequest request, PayableOrder order, Map<String, Object> additionalParameters) throws SystemMaintainException {
         PremierPayOrder payOrder = new PremierPayOrder();
         String merchantOrderId = payOrder.getMerchantOrderId();
-        StringBuilder sb = new StringBuilder();
+//        StringBuilder sb = new StringBuilder();
         String backUrl = backUrlPro;
         String notifyUrl = notifyUrlPrefix + "/premier/call_back";
         String mark = order.getOrderProductName();
@@ -55,22 +57,25 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
         BigDecimal orderMoney = order.getOrderDueAmount();
         String payType = additionalParameters.get("type").toString();
 
-        sb.append("backUrl").append(backUrl).append("&");
-        sb.append("customerId=").append(customerId).append("&");
-        sb.append("mark=").append(mark).append("&");
-        sb.append("notifyUrl=").append(notifyUrl).append("&");
-        sb.append("orderMoney=").append(orderMoney).append("&");
-        sb.append("orderNo=").append(merchantOrderId).append("&");
-        sb.append("payType=").append(payType).append("$");
-        sb.append("remarks=").append(remarks).append("&");
-        String Md5str = "customerId=" + customerId + "&orderNo=" + merchantOrderId + "&orderMoney=" + orderMoney + "&payType=" + payType + "&notifyUrl=" + notifyUrl + "&backUrl=" + backUrl + key;
+//        sb.append("backUrl").append(backUrl).append("&");
+//        sb.append("customerId=").append(customerId).append("&");
+//        sb.append("mark=").append(mark).append("&");
+//        sb.append("notifyUrl=").append(notifyUrl).append("&");
+//        sb.append("orderMoney=").append(orderMoney).append("&");
+//        sb.append("orderNo=").append(merchantOrderId).append("&");
+//        sb.append("payType=").append(payType).append("$");
+//        sb.append("remarks=").append(remarks).append("&");
+        String Md5str = "customerId=" + customerId + "&orderNo=" + merchantOrderId + "&orderMoney=" + orderMoney
+                + "&payType=" + payType + "&notifyUrl=" + notifyUrl + "&backUrl=" + backUrl + key;
         String sign;
         try {
-            sign = DigestUtils.md5Hex(Md5str.getBytes("UTF-8")).toUpperCase();
+            sign = DigestUtils.md5Hex(Md5str.getBytes(StandardCharsets.UTF_8)).toUpperCase();
         } catch (Throwable ex) {
             throw new SystemMaintainException(ex);
         }
-        String requestUrl = sendUrl + "?customerId=" + customerId + "&orderNo=" + merchantOrderId + "&orderMoney=" + orderMoney + "&payType=" + payType + "&notifyUrl=" + notifyUrl + "&backUrl=" + backUrl + "&sign=" + sign + "&mark=" + mark + "&remarks=" + remarks;
+        String requestUrl = sendUrl + "?customerId=" + customerId + "&orderNo=" + merchantOrderId + "&orderMoney="
+                + orderMoney + "&payType=" + payType + "&notifyUrl=" + notifyUrl + "&backUrl="
+                + backUrl + "&sign=" + sign + "&mark=" + mark + "&remarks=" + remarks + "&userIp=" + ServletUtils.clientIpAddress(request);
 
         try {
             String responseStr = HttpsClientUtil.sendRequest(requestUrl, null);
