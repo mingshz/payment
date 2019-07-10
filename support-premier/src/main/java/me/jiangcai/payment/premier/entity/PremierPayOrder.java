@@ -21,6 +21,12 @@ public class PremierPayOrder extends PayOrder {
     @Column(columnDefinition = "text")
     private String aliPayCodeUrl;
 
+    /**
+     * 支付通道标记
+     */
+    @Column(length = 10)
+    private String payType;
+
     @Override
     public Class<? extends PaymentForm> getPaymentFormClass() {
         return PremierPaymentForm.class;

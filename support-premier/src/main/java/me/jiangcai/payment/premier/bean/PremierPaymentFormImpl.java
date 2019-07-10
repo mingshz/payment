@@ -56,6 +56,7 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
         String remarks = order.getOrderProductModel();
         BigDecimal orderMoney = order.getOrderDueAmount();
         String payType = additionalParameters.get("type").toString();
+        payOrder.setPayType(payType);
 
 //        sb.append("backUrl").append(backUrl).append("&");
 //        sb.append("customerId=").append(customerId).append("&");
