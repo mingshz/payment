@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class PremierPaymentFormImpl implements PremierPaymentForm {
@@ -77,6 +78,18 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
         String requestUrl = sendUrl + "?customerId=" + customerId + "&orderNo=" + merchantOrderId + "&orderMoney="
                 + orderMoney + "&payType=" + payType + "&notifyUrl=" + notifyUrl + "&backUrl="
                 + backUrl + "&sign=" + sign + "&mark=" + mark + "&remarks=" + remarks + "&userIp=" + ServletUtils.clientIpAddress(request);
+//        bankCardNo	银行卡号	String	否	输入后限制必须使用这个卡号支付
+//        idCardNo	身份证号	String	否	输入后限制必须是这个身份证的人的卡支付
+//        cardName	姓名	String	否	输入后限制必须是这个姓名的人的卡支付
+//        isBindCard   0.不绑定  1.绑定     不传默认为不绑定
+        if (additionalParameters.containsKey("additional")) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> additional = (Map<String, Object>) additionalParameters.get("additional");
+            String more = additional.entrySet().stream()
+                    .map((stringObjectEntry -> "&" + stringObjectEntry.getKey() + "=" + stringObjectEntry.getValue()))
+                    .collect(Collectors.joining());
+            requestUrl = requestUrl + more;
+        }
 
         try {
             String responseStr = HttpsClientUtil.sendRequest(requestUrl, null);
