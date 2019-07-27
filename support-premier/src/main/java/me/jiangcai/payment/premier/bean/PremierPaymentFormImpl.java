@@ -98,12 +98,12 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
             if ("1".equals(root.get("status").asText())) {
                 //通信成功
                 log.debug("易支付,通信成功");
-                if ("1".equals(data.get("state").asText())) {
+                if ("2".equals(payType)) {
+                    payOrder.setAliPayCodeUrl(root.get("payInfo").asText());
+                } else if ("1".equals(data.get("state").asText())) {
                     // 业务成功
                     log.debug("业务成功");
-                    if ("2".equals(payType)) {
-                        payOrder.setAliPayCodeUrl(root.get("payInfo").asText());
-                    } else if ("9".equals(payType)) {
+                    if ("9".equals(payType)) {
                         payOrder.setAliPayCodeUrl(root.get("url").asText());
                     } else if ("13".equals(payType) || "16".equals(payType)) {
                         payOrder.setAliPayCodeUrl(data.get("url").asText());
