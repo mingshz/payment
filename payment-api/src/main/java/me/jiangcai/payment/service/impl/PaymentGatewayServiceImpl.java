@@ -8,6 +8,7 @@ import me.jiangcai.payment.event.OrderPaySuccess;
 import me.jiangcai.payment.event.PaymentEvent;
 import me.jiangcai.payment.service.PayableSystemService;
 import me.jiangcai.payment.service.PaymentGatewayService;
+import me.jiangcai.payment.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 /**
  * @author CJ
  */
+@SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "SpringJavaAutowiredFieldsWarningInspection"})
 @Service
 public class PaymentGatewayServiceImpl implements PaymentGatewayService {
 
@@ -37,6 +39,8 @@ public class PaymentGatewayServiceImpl implements PaymentGatewayService {
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private PayableSystemService payableSystemService;
+    @Autowired
+    private PaymentService paymentService;
 
     @Override
     public <T extends PayOrder> T getOrder(Class<T> type, String platformId) {
@@ -123,7 +127,7 @@ public class PaymentGatewayServiceImpl implements PaymentGatewayService {
 
     @Override
     public void queryPayStatus(PayOrder order) {
-        PaymentForm form = applicationContext.getBean(order.getPaymentFormClass());
+        PaymentForm form = paymentService.requestPaymentForm(order.getPaymentFormClass(), order.getIdentity());
         if (form.isSupportPayOrderStatusQuerying())
             form.queryPayStatus(order);
     }

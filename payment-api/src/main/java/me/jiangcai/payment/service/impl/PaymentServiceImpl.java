@@ -10,6 +10,7 @@ import me.jiangcai.payment.service.PaymentService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -25,22 +26,52 @@ import java.util.Map;
 /**
  * @author CJ
  */
+@SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
     private static final Log log = LogFactory.getLog(PaymentServiceImpl.class);
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private PayableSystemService payableSystemService;
-    @SuppressWarnings("SpringJavaAutowiringInspection")
+    @SuppressWarnings({"SpringJavaAutowiringInspection", "SpringJavaInjectionPointsAutowiringInspection"})
     @Autowired
     private EntityManager entityManager;
     @Autowired
     private PaymentGatewayService paymentGatewayService;
+    @Autowired
+    private ApplicationContext applicationContext;
+    private Map<Class<? extends PaymentForm>, Map<String, PaymentForm>> forms = new HashMap<>();
+    private Map<PaymentForm, String> identities = new HashMap<>();
+
+    @Override
+    public void registerPaymentForm(Class<? extends PaymentForm> type, String identity, Object... arguments) {
+        if (!forms.containsKey(type)) {
+            forms.put(type, new HashMap<>());
+        }
+        PaymentForm form = applicationContext.getBean(type, arguments);
+        forms.get(type).put(identity, form);
+        identities.put(form, identity);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends PaymentForm> T requestPaymentForm(Class<T> type, String identity) {
+        Map<String, PaymentForm> map = forms.get(type);
+        if (map == null)
+            return null;
+        if (identity == null) {
+            //noinspection OptionalGetWithoutIsPresent
+            return (T) map.values().stream().findAny().get();
+        }
+        return (T) map.get(identity);
+    }
 
     @Override
     public ModelAndView startPay(HttpServletRequest request, PayableOrder order, PaymentForm form, Map<String, Object> additionalParameters) throws SystemMaintainException {
         // 我们并不需要告诉order 我们的支付细节！
         PayOrder payOrder = form.newPayOrder(request, order, additionalParameters);
+        payOrder.setIdentity(identities.get(form));
         payOrder.setStartTime(LocalDateTime.now());
         payOrder.setPayableOrderId(order.getPayableOrderId().toString());
         entityManager.persist(payOrder);

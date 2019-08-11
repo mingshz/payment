@@ -4,4 +4,5 @@ import me.jiangcai.payment.PaymentForm;
 
 public interface PremierPaymentForm extends PaymentForm {
 
+    String getKey();
 }

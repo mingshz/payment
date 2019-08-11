@@ -5,9 +5,10 @@ import me.jiangcai.demo.pay.entity.DemoPayOrder;
 import me.jiangcai.payment.MockPaymentEvent;
 import me.jiangcai.payment.PayableOrder;
 import me.jiangcai.payment.entity.PayOrder;
-import me.jiangcai.payment.exception.SystemMaintainException;
 import me.jiangcai.payment.service.PaymentGatewayService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +19,16 @@ import java.util.UUID;
 /**
  * @author CJ
  */
+@SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class DemoPaymentFormImpl implements DemoPaymentForm {
 
     @Autowired
     private PaymentGatewayService paymentGatewayService;
 
     @Override
-    public PayOrder newPayOrder(HttpServletRequest request, PayableOrder order, Map<String, Object> additionalParameters) throws SystemMaintainException {
+    public PayOrder newPayOrder(HttpServletRequest request, PayableOrder order, Map<String, Object> additionalParameters) {
         PayOrder payOrder = new DemoPayOrder();
         payOrder.setPlatformId(UUID.randomUUID().toString());
         return payOrder;

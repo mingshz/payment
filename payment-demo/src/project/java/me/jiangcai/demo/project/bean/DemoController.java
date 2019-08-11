@@ -5,7 +5,6 @@ import me.jiangcai.demo.project.repository.DemoTradeOrderRepository;
 import me.jiangcai.payment.PaymentForm;
 import me.jiangcai.payment.exception.SystemMaintainException;
 import me.jiangcai.payment.service.PaymentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,14 +23,15 @@ import java.util.UUID;
 @Controller
 public class DemoController {
 
-    @Autowired
-    private PaymentService paymentService;
-    //    @Autowired
-//    private DemoPaymentForm demoPaymentForm;
-    @Autowired
-    private ApplicationContext applicationContext;
-    @Autowired
-    private DemoTradeOrderRepository demoTradeOrderRepository;
+    private final PaymentService paymentService;
+    private final ApplicationContext applicationContext;
+    private final DemoTradeOrderRepository demoTradeOrderRepository;
+
+    public DemoController(PaymentService paymentService, ApplicationContext applicationContext, DemoTradeOrderRepository demoTradeOrderRepository) {
+        this.paymentService = paymentService;
+        this.applicationContext = applicationContext;
+        this.demoTradeOrderRepository = demoTradeOrderRepository;
+    }
 
     @RequestMapping(value = {"", "/"})
     public String index() {
@@ -54,7 +54,8 @@ public class DemoController {
         System.arraycopy(d, 1, toParameters, 0, d.length - 1);
         setupAdditionalParameters(additionalParameters, toParameters);
 
-        return paymentService.startPay(request, order, (PaymentForm) applicationContext.getBean(Class.forName(type)), additionalParameters);
+        @SuppressWarnings("unchecked") final Class<? extends PaymentForm> formType = (Class<? extends PaymentForm>) Class.forName(type);
+        return paymentService.startPay(request, order, paymentService.requestPaymentForm(formType, null), additionalParameters);
     }
 
     private void setupAdditionalParameters(Map<String, Object> additionalParameters, String[] toParameters) {

@@ -16,6 +16,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +33,9 @@ import java.util.Random;
 /**
  * @author CJ
  */
+@SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class HuabeiPaymentFormImpl implements HuabeiPaymentForm {
 
     private static final Log log = LogFactory.getLog(HuabeiPaymentFormImpl.class);
@@ -56,9 +60,10 @@ public class HuabeiPaymentFormImpl implements HuabeiPaymentForm {
     private final Random random = new Random();
     @Autowired
     private PaymentGatewayService paymentGatewayService;
-
     @Autowired
-    public HuabeiPaymentFormImpl(Environment environment) {
+    private Environment environment;
+
+    public HuabeiPaymentFormImpl() {
         rootUrl = environment.getProperty("huabei.url", "http://hbfq.huaat.com");
         businessID = environment.getProperty("huabei.businessID", "HBCD2040");
         shopID = environment.getProperty("huabei.shopID", "HBCD20400001");
@@ -123,7 +128,7 @@ public class HuabeiPaymentFormImpl implements HuabeiPaymentForm {
 
     private CloseableHttpClient requestClient() {
         HttpClientBuilder builder = HttpClientBuilder.create();
-        builder = builder.setDefaultRequestConfig(RequestConfig.custom()
+        builder.setDefaultRequestConfig(RequestConfig.custom()
                 .setConnectTimeout(30000)
                 .setConnectionRequestTimeout(30000)
                 .setSocketTimeout(300000)

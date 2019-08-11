@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Import;
  *
  * @author CJ
  */
+@SuppressWarnings("WeakerAccess")
 @ComponentScan("me.jiangcai.payment.chanpay.service")
 @Import({ChanpayConfig.class, PaymentConfig.class})
 public class PaymentChanpayConfig {

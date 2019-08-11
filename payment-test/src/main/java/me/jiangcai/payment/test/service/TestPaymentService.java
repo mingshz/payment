@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author CJ
  */
+@SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
 @Primary
 public class TestPaymentService extends PaymentServiceImpl {

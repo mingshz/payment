@@ -1,20 +1,18 @@
 package me.jiangcai.payment.premier.bean;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.apachecommons.CommonsLog;
+import me.jiangcai.payment.premier.PremierPaymentForm;
 import me.jiangcai.payment.premier.entity.PremierPayOrder;
 import me.jiangcai.payment.service.PaymentGatewayService;
+import me.jiangcai.payment.service.PaymentService;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 用于接受回调函数的对外接口
@@ -25,26 +23,21 @@ import java.io.IOException;
 @CommonsLog
 public class PremierCallBackController {
 
+    private final PaymentGatewayService paymentGatewayService;
+    private final PaymentService paymentService;
 
-    @Autowired
-    private ApplicationEventPublisher applicationEventPublisher;
-    @Autowired
-    private PaymentGatewayService paymentGatewayService;
-
-    private final String key;
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    @Autowired
-    public PremierCallBackController(Environment environment) {
-        this.key = environment.getProperty("premier.mKey", "7692ecf5b63949337473755b062f2434");
+    public PremierCallBackController(PaymentGatewayService paymentGatewayService, PaymentService paymentService) {
+        this.paymentGatewayService = paymentGatewayService;
+        this.paymentService = paymentService;
     }
 
     @RequestMapping(value = "/premier/call_back", method = RequestMethod.POST)
     @ResponseBody
-    public String callBack(HttpServletRequest request) throws IOException {
+    public String callBack(HttpServletRequest request) {
         //解析返回串
         String state = request.getParameter("state");
         String customerId = request.getParameter("customerId");
+        PremierPaymentForm form = paymentService.requestPaymentForm(PremierPaymentForm.class, customerId);
         String orderNum = request.getParameter("orderNum");
         String orderNo = request.getParameter("orderNo");
         String orderMoney = request.getParameter("orderMoney");
@@ -57,8 +50,9 @@ public class PremierCallBackController {
 //         orderMoney  //商户订单实际金额单位：（元）
 //         sign    //网关系统签名字符串
 //         */
-        String md5str = "customerId=" + customerId + "&orderNum=" + orderNum + "&orderNo=" + orderNo + "&orderMoney=" + orderMoney + "&state=" + state + "&key=" + key;
-        String sign2 = DigestUtils.md5Hex(md5str.getBytes("UTF-8")).toUpperCase();
+        String md5str = "customerId=" + customerId + "&orderNum=" + orderNum + "&orderNo=" + orderNo
+                + "&orderMoney=" + orderMoney + "&state=" + state + "&key=" + form.getKey();
+        String sign2 = DigestUtils.md5Hex(md5str.getBytes(StandardCharsets.UTF_8)).toUpperCase();
         if (!sign.equals(sign2)) {
             //签名错误
             log.error("签名错误");

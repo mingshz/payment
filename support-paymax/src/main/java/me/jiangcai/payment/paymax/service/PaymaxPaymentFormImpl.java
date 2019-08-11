@@ -16,6 +16,8 @@ import me.jiangcai.payment.service.PaymentGatewayService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -31,7 +33,9 @@ import java.util.UUID;
 /**
  * @author CJ
  */
+@SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class PaymaxPaymentFormImpl implements PaymaxPaymentForm {
 
     @Autowired

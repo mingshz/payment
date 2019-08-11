@@ -13,8 +13,8 @@ import me.jiangcai.payment.premier.exception.PlaceOrderException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class PremierPaymentFormImpl implements PremierPaymentForm {
     private static final Log log = LogFactory.getLog(PremierPaymentFormImpl.class);
 
@@ -36,14 +37,18 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
     private final String sendUrl;
     private final String key;
 
-    @Autowired
-    public PremierPaymentFormImpl(Environment environment) {
-        customerId = environment.getProperty("premier.customerId", "1535535402498");
-        notifyUrlPrefix = environment.getProperty("premier.notifyUrl", "");
-        backUrlPro = environment.getProperty("premier.backUrl", "");
+    public PremierPaymentFormImpl(Map<String, String> properties) {
+        customerId = properties.getOrDefault("premier.customerId", "1535535402498");
+        notifyUrlPrefix = properties.getOrDefault("premier.notifyUrl", "");
+        backUrlPro = properties.getOrDefault("premier.backUrl", "");
 
-        this.sendUrl = environment.getProperty("premier.transferUrl", "https://api.aisaepay.com/companypay/easyPay/recharge");
-        this.key = environment.getProperty("premier.mKey", "7692ecf5b63949337473755b062f2434");
+        this.sendUrl = properties.getOrDefault("premier.transferUrl", "https://api.aisaepay.com/companypay/easyPay/recharge");
+        this.key = properties.getOrDefault("premier.mKey", "7692ecf5b63949337473755b062f2434");
+    }
+
+    @Override
+    public String getKey() {
+        return key;
     }
 
     @Override

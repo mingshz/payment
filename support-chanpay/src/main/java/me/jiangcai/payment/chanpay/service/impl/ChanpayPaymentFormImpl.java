@@ -16,6 +16,8 @@ import me.jiangcai.payment.util.RequestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +29,9 @@ import java.util.Map;
 /**
  * @author CJ
  */
+@SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ChanpayPaymentFormImpl implements ChanpayPaymentForm {
 
     private static final Log log = LogFactory.getLog(ChanpayPaymentForm.class);
@@ -38,7 +42,7 @@ public class ChanpayPaymentFormImpl implements ChanpayPaymentForm {
     private PaymentGatewayService paymentGatewayService;
 
     @Override
-    public void tradeUpdate(TradeEvent event) throws IOException, SignatureException {
+    public void tradeUpdate(TradeEvent event) {
         log.debug("trade event:" + event);
         ChanpayPayOrder order = paymentGatewayService.getOrder(ChanpayPayOrder.class, event.getSerialNumber());
         if (order == null) {
@@ -66,7 +70,8 @@ public class ChanpayPaymentFormImpl implements ChanpayPaymentForm {
 
         // /_payment/success/
         // 默认微信支付
-        if (additionalParameters != null && additionalParameters.get("desktop") != null && Boolean.valueOf(additionalParameters.get("desktop").toString())) {
+        if (additionalParameters != null && additionalParameters.get("desktop") != null
+                && Boolean.parseBoolean(additionalParameters.get("desktop").toString())) {
             // 计算url
             StringBuilder sb;
             if (additionalParameters.containsKey(PaymentService.ContextURLNAME)) {

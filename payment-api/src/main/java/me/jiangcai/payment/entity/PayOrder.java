@@ -31,6 +31,11 @@ public abstract class PayOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     /**
+     * 所属支付方式的识别符
+     */
+    @Column(length = 36)
+    private String identity;
+    /**
      * 平台方提供的主键
      */
     @Column(length = 36)

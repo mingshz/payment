@@ -17,6 +17,27 @@ import java.util.Map;
  */
 public interface PaymentService {
 
+//    允许客户项目注册支付方式
+
+    /**
+     * 注册支付方式
+     *
+     * @param type     支付方式的类型
+     * @param identity 识别符
+     * @see org.springframework.context.ApplicationContext#getBean(Class, Object...)
+     */
+    void registerPaymentForm(Class<? extends PaymentForm> type, String identity, Object... arguments);
+
+    /**
+     * 请求支付方式
+     *
+     * @param type     支付方式的类型
+     * @param identity 识别符; 如果为空，表示随意
+     * @param <T>      支付方式的类型
+     * @return 支付方式; 如果没有回返回null
+     */
+    <T extends PaymentForm> T requestPaymentForm(Class<T> type, String identity);
+
     // MVC 层次
     /**
      * 支持在额外参数中明示当前的上下文URL
