@@ -56,7 +56,7 @@ public class PremierPaymentFormImpl implements PremierPaymentForm {
         PremierPayOrder payOrder = new PremierPayOrder();
         String merchantOrderId = payOrder.getMerchantOrderId();
 //        StringBuilder sb = new StringBuilder();
-        String backUrl = backUrlPro;
+        String backUrl = additionalParameters.getOrDefault("backUrl", backUrlPro).toString();
         String notifyUrl = notifyUrlPrefix + "/premier/call_back";
         String mark = order.getOrderProductName();
         String remarks = order.getOrderProductModel();
