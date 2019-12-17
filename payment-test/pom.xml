@@ -7,7 +7,7 @@
     <parent>
         <artifactId>payment</artifactId>
         <groupId>me.jiangcai.payment</groupId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.1.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>payment-test</artifactId>
